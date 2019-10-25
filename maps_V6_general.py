@@ -10,6 +10,7 @@ from datetime import datetime
 
 import libs.display as oled
 import libs.color_text as color
+import libs.get_serial as mcu
 
 import threading
 
@@ -97,7 +98,6 @@ def storage():
     values["date"] = pairs[0]
     values["time"] = pairs[1]
 
-
     for item in CSV_items:
         if item in values:
             CSV_msg = CSV_msg + str(values[item]) + ','
@@ -105,11 +105,9 @@ def storage():
             CSV_msg = CSV_msg + "N/A" + ','
     CSV_msg= CSV_msg[:-1] #to get rid  of ',' from last data
 
-    #print(COLOR_PURPLE + "CSV_MSG:" + COLOR_REST)
-    color.print_p("CSV_MSG:")
-    print(CSV_msg)
+    #color.print_p("CSV_MSG:")
+    #print(CSV_msg)
 
-    #remember to add USB drive storage!!
     with open(path + "/" + values["date"] + ".csv", "a") as f:
         f.write(CSV_msg + "\n")
 
@@ -121,7 +119,6 @@ def storage():
 def upload():
     restful_str = "wget -O /tmp/last_upload.log \"" + Conf.Restful_URL + "topic=" + Conf.APP_ID + "&device_id=" + Conf.DEVICE_ID + "&key=" + Conf.SecureKey + "&msg=" + msg + "\""
 
-    #print(COLOR_PURPLE + "restful_str:" + COLOR_REST)
     color.print_p("restful_str:")
     print(restful_str)
 
@@ -145,7 +142,7 @@ def display():
     oled.line("Date: " + str(pairs[0]))
     oled.line("Time: " + str(pairs[1]))
     oled.line("Temp: " + str(values["s_t0"]) + " / " + "RH: " + str(values["s_h0"]))
-    oled.line("PM2.5: " + str(values["s_d0"]) + " μm")
+    oled.line("PM2.5: " + str(values["s_d0"]) + " um")
     oled.line("CO2: " + str(values["s_gh"]) + " ppm")
     oled.line("IP: " + Conf.DEVICE_IP)
     oled.show()
@@ -156,20 +153,37 @@ def display():
 def show_task():
     while True:
         display()
-        time.sleep(0.1)
+        time.sleep(0.5)
 
 
 
+def get_data():
 
+    from_serial =  mcu.get()
+    print(from_serial)
+
+    with open("/home/pi/MAPS6.0/data/check.csv", "a") as f:
+        f.write(from_serial + "\n")
+
+    #for i in range(len(from_serial)):
+    #    item = from_serial[i].split('=')
+    #    print (item[1])
 
 
 #main start here
 
 print("START")
+
+#get data
+#get_data()
+print("data OK !!!!!!!")
+
 #storage()
 print("storage OK !!!!!!!")
+
 #upload()
 print("upload OK !!!!!!!")
+
 #display()
 
 
@@ -188,6 +202,8 @@ while True:
 
     print("loop: " + str(count))
     count = count + 1
+    get_data()
+    #can be comment when display on daemon
     #display()
     storage()
     #time.sleep(Conf.Interval_LCD)

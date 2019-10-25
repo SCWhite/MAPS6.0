@@ -13,15 +13,15 @@
 Version = "6.0.0" #for next generation PI version
 
 #sencer configure
-Sense_PM = 1
-Sense_Tmp = 1
-Sense_Light = 1
-Sense_Co2 = 1
-Sense_TVOC = 1
+#Sense_PM = 1
+#Sense_Tmp = 1
+#Sense_Light = 1
+#Sense_Co2 = 1
+#Sense_TVOC = 1
 #Use_RTC_DS3231 = 1
-Nbiot_Sim7000 = 1
+#Nbiot_Sim7000 = 1
 
-#list every value 
+#list every value
 GPS_LAT = 25.1933
 GPS_LON = 121.7870
 APP_ID = "MAPS6"  #need to change for PI version
@@ -33,11 +33,11 @@ s_h0 = 0.0
 s_d2 = 0.0
 s_d0 = 0
 s_d1 = 0
-s_l0 = 0
-s_lr = 0
-s_lg = 0
-s_lb = 0
-s_lc = 0
+#s_l0 = 0
+#s_lr = 0
+#s_lg = 0
+#s_lb = 0
+#s_lc = 0
 s_gh = 400
 s_gg = 0
 uptime = 0
@@ -72,8 +72,8 @@ if(DEVICE_IP == ''):
         f = os.popen('ifconfig wlan0 | grep "inet\ " | cut -d \  -f10')
         DEVICE_IP=f.read()
 
-print("ID:"+DEVICE_ID)
-print("wlan IP:"+DEVICE_IP)
+#print("ID:"+DEVICE_ID)
+#print("wlan IP:"+DEVICE_IP)
 
 #if Use_RTC_DS3231 == 1:
 #	import mraa
@@ -98,7 +98,7 @@ print("wlan IP:"+DEVICE_IP)
 #tvoc_q = Queue(maxsize=5)
 
 #note: honeywell CO2 use "s_gh" instead of  SenseAir S8 "s_g8"
-
+'''
 fields ={       "Tmp"   :       "s_t0",
                 "RH"    :       "s_h0",
                 "PM1.0" :       "s_d2",
@@ -125,9 +125,9 @@ values = {      "app"           :       APP_ID,
                 "date"          :       "1900-01-01",
                 "time"          :       "00:00:00",
         }
-
-#new version of value
 '''
+#new version of value
+
 values = {      "app"           :       APP_ID,
                 "app_ver"       :       Version,
                 "device"        :       DEVICE,
@@ -147,12 +147,7 @@ values = {      "app"           :       APP_ID,
                 "PM1.0"         :       s_d2,
                 "PM2.5"         :       s_d0,
                 "PM10"          :       s_d1,
-                "Lux"           :       s_l0,
-                "RGB_R"         :       s_lr,
-                "RGB_G"         :       s_lg,
-                "RGB_B"         :       s_lb,
-                "RGB_C"         :       s_lc,
                 "CO2"           :       s_gh,
                 "TVOC"          :       s_gg,
         }
-'''
+
