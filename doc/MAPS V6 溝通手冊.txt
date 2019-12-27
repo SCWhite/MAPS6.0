@@ -1,0 +1,276 @@
+MAPS V6 
+
+
+UART Format N,8,1  Baud- 115200 
+===========================================================
+實際發送:
+
+Leading 包含 Byte &(!Byte) 兩部分
+所以一次 2 Byte
+0xAA 0x55 (1010 1010 > 0101 0101)
+
+Command 包含 Byte &(!Byte) 兩部分
+所以一次也是 2 Byte
+0xB0 0x4F (1011 0000 > 0100 1111)
+
+------------------------------------------------------------
+指令範圍:
+
+發送資料都為 1 Byte
+
+Leading: 0xAA
+Command: 0xB0 ~ 0xCF
+
+------------------------------------------------------------
+GET DATA:
+
+發送
+Leading+Command
+
+回傳
+Leading+Command+Data+Checksum
+------------------------------------------------------------
+SET DATA:
+
+發送
+Leading+Command+Data+Checksum
+
+回傳
+Leading+Command+Result
+------------------------------------------------------------
+PROTOCOL:
+
+發送
+Leading+Command+Data+Checksum
+
+回傳
+Leading+Command+Data+Checksum
+------------------------------------------------------------
+Checksum計算:
+
+
+Checksum 為2 Byte 一個 SUM 另一個為 !SUM 
+
+sum of [(Byte-n) xor (n%256)]
+
+(Byte-1) xor (1%256) + (Byte-2) xor (2%256) + ... + (Byte-n) xor (n%256)
+
+===========================================================
+
+功能介紹:
+
+GET_TEMP_HUM:
+
+Command= 0xB0
+
+傳輸指令:
+0xAA 0x55 0xB0 0x4F
+
+預期回覆:
+0xAA 0xB0 [TEMP*100] [HUM*100] [SUM] [!SUM]
+
+共 8 Byte
+
+數值範圍:
+[TEMP*100]  -1000 ~ 14000   C
+[HUM*100]       0 ~ 10000   %RH
+------------------------------------------------------------
+GET_CO2:
+
+Command= 0xB1
+
+傳輸指令:
+0xAA 0x55 0xB1 0x4E
+
+預期回覆:
+0xAA 0xB1 [CO2] [AVE_CO2] [SUM] [!SUM]
+
+共 8 Byte
+
+數值範圍:
+[CO2]        0 ~ 65535  ppm
+[AVE_CO2]    0 ~ 65535  ppm
+
+------------------------------------------------------------
+GET_TVOC:
+
+Command= 0xB2
+
+傳輸指令:
+0xAA 0x55 0xB2 0x4D
+
+預期回覆:
+
+0xAA 0xB2 [TVOC] [eCO2] [S_H2] [S_ETHANOL] [BASELINE_TVOC] [BASELINE_eCO2] [SUM] [!SUM]
+
+共16 Byte
+
+數值範圍:
+[TVOC]           0 ~ 65535  ppb
+[eCO2]           0 ~ 65535  ppm
+[S_H2]           0 ~ 65535  Raw
+[S_ETHANOL]      0 ~ 65535  Raw
+[BASELINE_TVOC]  0 ~ 65535  Raw
+[BASELINE_eCO2]  0 ~ 65535  Raw
+
+------------------------------------------------------------
+GET_LIGHT:
+
+Command= 0xB3
+
+傳輸指令:
+0xAA 0x55 0xB3 0x4C
+
+預期回覆:
+0xAA 0xB3 [Illuminance] [Color_Temperature] [CH_R] [CH_G] [CH_B] [CH_C] [SUM] [!SUM]
+
+共16 Byte
+
+[Illuminance]        0 ~ 65535  lux
+[Color_Temperature]  0 ~ 65535  k
+[CH_R]               0 ~ 65535  Raw
+[CH_G]               0 ~ 65535  Raw
+[CH_B]               0 ~ 65535  Raw
+[CH_C]               0 ~ 65535  Raw
+
+------------------------------------------------------------
+GET_PMS:
+
+Command= 0xB4
+
+傳輸指令:
+0xAA 0x55 0xB4 0x4B
+
+預期回覆:
+0xAA 0xB4 [PM1.0_AE] [PM2.5_AE] [PM10.0_AE] [PM1.0_SP] [PM2.5_SP] [PM10.0_SP] [SUM] [!SUM]
+
+共16 Byte
+
+[PM1.0_AE]      0 ~ 65535 ug/m3
+[PM2.5_AE]      0 ~ 65535 ug/m3
+[PM10.0_AE]     0 ~ 65535 ug/m3
+[PM1.0_SP]      0 ~ 65535 ug/m3
+[PM2.5_SP]      0 ~ 65535 ug/m3
+[PM10.0_SP]     0 ~ 65535 ug/m3
+
+------------------------------------------------------------
+GET_SENSOR_ALL:
+
+Command= 0xB5
+
+傳輸指令:
+0xAA 0x55 0xB5 0x4A
+
+預期回覆:
+0xAA 0xB5 [TEMP*100] [HUM*100] [CO2] [AVE_CO2] [TVOC] [eCO2] [S_H2] [S_ETHANOL] 
+[BASELINE_TVOC] [BASELINE_eCO2] [Illuminance] [Color_Temperature] [CH_R] [CH_G] 
+[CH_B] [CH_C] [PM1.0_AE] [PM2.5_AE] [PM10.0_AE] [PM1.0_SP] [PM2.5_SP] [PM10.0_SP] [SUM] [!SUM]
+
+共48 Byte
+
+數值範圍參考上方
+------------------------------------------------------------
+GET_INFO_VERSION:
+
+Command= 0xB6
+
+傳輸指令:
+0xAA 0x55 0xB6 0x49
+
+預期回覆:
+0xAA 0xB6 [VERSION] [SUM] [!SUM]
+
+共 6 Byte
+
+[VERSION]   0 ~ 65535  (1102 表示 V1.102)
+
+------------------------------------------------------------
+GET_INFO_RUNTIME:
+
+Command= 0xB7
+
+傳輸指令:
+0xAA 0x55 0xB7 0x48
+
+預期回覆:
+0xAA 0xB7 [RT_DAY] [RT_HOUR] [RT_MIN] [RT_SEC] [SUM] [!SUM]
+
+共 9 Byte
+
+[RT_DAY]    0 ~ 65535 day
+[RT_HOUR]   0 ~ 23    hour
+[RT_MIN]    0 ~ 59    min
+[RT_SEC]    0 ~ 59    s
+------------------------------------------------------------
+GET_INFO_ERROR_LOG:
+
+Command= 0xB8
+
+傳輸指令:
+0xAA 0x55 0xB8 0x47
+
+預期回覆:
+0xAA 0xB8 [ERROR_TEMP_HUM] [ERROR_CO2] [ERROR_TVOC] [ERROR_LIGHT] [ERROR_PMS] [ERROR_RTC] [SUM] [!SUM]
+
+共16 Byte
+
+[ERROR_TEMP_HUM]   0 ~ 65535
+[ERROR_CO2]        0 ~ 65535
+[ERROR_TVOC]       0 ~ 65535
+[ERROR_LIGHT]      0 ~ 65535
+[ERROR_PMS]        0 ~ 65535
+[ERROR_RTC]        0 ~ 65535
+------------------------------------------------------------
+GET_INFO_SENSOR_POR:
+
+Command= 0xB9
+
+傳輸指令:
+0xAA 0x55 0xB9 0x46
+
+預期回覆:
+0xAA 0xB4 [POR_TEMP_HUM] [POR_CO2] [POR_TVOC] [POR_LIGHT] [POR_PMS] [POR_RTC] [SUM] [!SUM]
+
+共10 Byte(這裡每個項目為 1 Byte)
+
+[POR_TEMP_HUM]   0 ~ 1
+[POR_CO2]        0 ~ 1
+[POR_TVOC]       0 ~ 1
+[POR_LIGHT]      0 ~ 1
+[POR_PMS]        0 ~ 1
+[POR_RTC]        0 ~ 1
+------------------------------------------------------------
+GET_RTC_DATE_TIME:
+
+Command= 0xBA
+
+傳輸指令:
+0xAA 0x55 0xBA 0x45
+
+預期回覆:
+0xAA 0xBA [RTC_YY] [RTC_MM] [RTC_DD] [RTC_hh] [RTC_mm] [RTC_ss] [SUM] [!SUM]
+
+共10 Byte(這裡每個項目為 1 Byte)
+
+[RTC_YY]    0 ~ 199
+[RTC_MM]    1 ~ 12
+[RTC_DD]    1 ~ 31
+[RTC_hh]    0 ~ 23
+[RTC_mm]    0 ~ 59
+[RTC_ss]    0 ~ 59
+
+------------------------------------------------------------
+
+
+提問區
+===========================================================
+數值範圍 若有負號 是怎麼計算
+EX. [TEMP]  -1000 ~ 14000
+
+
+累積錯誤次數 "錯誤"的定義?
+
+POL_CO2= 0 及 POL_LIGHT= 0
+他的暫停方法和是否影響計數器本身?
+
+USB-UART Bridge 連線是什麼?
