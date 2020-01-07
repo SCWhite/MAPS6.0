@@ -1,4 +1,4 @@
-import serial
+#import serial
 
 #command code
 leading_cmd             = 0xAA
@@ -11,17 +11,20 @@ GET_SENSOR_ALL_cmd      = 0xB5
 GET_INFO_VERSION_cmd    = 0xB6
 GET_INFO_RUNTIME_cmd    = 0xB7
 GET_INFO_ERROR_LOG_cmd  = 0xB8
-GET_INFO_SENSOR_POR_cmd = 0xB9
+GET_INFO_SENSOR_POR_cmd = 0xB9 # V1.1 (Update)
 GET_RTC_DATE_TIME_cmd   = 0xBA
+GET_INFO_PIN_STATE_cmd  = 0xBB # V1.1 (New)
 
+SET_STATUS_LED_cmd       = 0xBF # V1.1 (New)
 SET_PIN_CO2_CAL_cmd      = 0xC0
 SET_PIN_PMS_RESET_cmd    = 0xC1
 SET_PIN_PMS_SET_cmd      = 0xC2
 SET_PIN_NBIOT_PWRKEY_cmd = 0xC3
 SET_PIN_NBIOT_SLEEP_cmd  = 0xC4
 SET_PIN_LED_ALL_cmd      = 0xC5
-SET_POLLING_SENSOR_cmd   = 0xC6
-SET_RTC_DATE_TIME_cmd    = 0xC7
+SET_POLLING_SENSOR_cmd   = 0xC6 # V1.1 (Update)
+SET_RTC_DATE_TIME_cmd    = 0xC7 # V1.1 (Update)
+SET_PIN_FAN_ALL_cmd      = 0xC8 # V1.1 (New)
 
 SET_PIN_CO2_CAL_key      = bytearray([0x53,0x38,0x4C,0x50])
 SET_PIN_PMS_RESET_key    = bytearray([0x50,0x4D,0x53,0x33])
@@ -29,12 +32,17 @@ SET_PIN_PMS_SET_key      = bytearray([0x33,0x30,0x30,0x33])
 SET_PIN_NBIOT_PWRKEY_key = bytearray([0x4E,0x42,0x2D,0x49])
 SET_PIN_NBIOT_SLEEP_key  = bytearray([0x2D,0x49,0x4F,0x54])
 SET_PIN_LED_ALL_key      = bytearray([0x53,0x4C,0x45,0x44])
+SET_PIN_FAN_ALL_key      = bytearray([0x46,0x41,0x4E,0x63]) # V1.1 (New)
 
 
-PROTOCOL_I2C_WRITE_cmd   = 0xCA
-PROTOCOL_I2C_READ_cmd    = 0xCB
-PROTOCOL_UART_BEGIN_cmd  = 0xCC
-PROTOCOL_UART_TX_RX_cmd  = 0xCD
+PROTOCOL_I2C_WRITE_cmd    = 0xCA
+PROTOCOL_I2C_READ_cmd     = 0xCB
+PROTOCOL_UART_BEGIN_cmd   = 0xCC
+PROTOCOL_UART_TX_RX_cmd   = 0xCD # V1.1 (Update)
+PROTOCOL_UART_TXRX_EX_cmd = 0xCE # V1.1 (New)
+
+ENABLE_UART_ACTIVE_RX_cmd = 0xCF # V1.1 (New)
+ECHO_UART_ACTIVE_RX_cmd   = 0xCF # V1.1 (New)
 
 
 #==========CONVERT FUNC==========#
@@ -49,6 +57,7 @@ def bit_reverse(byte_command):
 
     return rev_command
 
+
 #crc_calc
 #checksum = ∑( Byte n xor (n%256) )
 # so in loop of len(Byte), every Byte do xor with n 
@@ -62,6 +71,36 @@ def crc_calc(byte_arr):
     checksum = (checksum & 0xFF)
 
     return checksum
+
+
+#byte formater
+#convert 'int' to 'byte'
+#and create proper format for multiple byte 
+
+def convert_2_byte(int_value):
+    host_send = bytearray()
+    host_send.append(int_value // 256)
+    host_send.append(int_value % 256)
+    
+    return host_send
+
+
+def convert_4_byte(int_value):
+    host_send = bytearray()
+    byte_0 = int_value // (256 * 256 * 256)
+    byte_1 = (int_value % (256 * 256 * 256)) // (256 * 256)
+    byte_2 = (int_value % (256 * 256)) // 256
+    byte_3 = int_value % 256
+    
+    host_send.append(byte_0)
+    host_send.append(byte_1)
+    host_send.append(byte_2)
+    host_send.append(byte_3)
+    
+    return host_send
+
+
+
 
 
 #==========GENERAL FUNC==========#
@@ -144,6 +183,23 @@ def RTC_SET(YY,MM,DD,hh,mm,ss):
     
     return host_send
     
+def LED_SET(cmd,state):
+    #command for SET_STATUS_LED, because there is no key
+    host_send = bytearray()
+    host_send.append(leading_cmd)
+    host_send.append(bit_reverse(leading_cmd))
+    host_send.append(cmd)
+    host_send.append(bit_reverse(cmd))
+    #state
+    # 2 Byte
+    state = convert_2_byte(state)
+    host_send.extend(state)
+    #checksum
+    sum_byte = crc_calc(host_send)
+    host_send.append(sum_byte)
+    host_send.append(bit_reverse(sum_byte))
+    
+    return host_send
 
     
 
@@ -226,15 +282,31 @@ def GET_RTC_DATE_TIME():
     data = GENERAL_GET(GET_RTC_DATE_TIME_cmd)
     print("".join("%02x " % i for i in data).upper())
 
+def GET_INFO_PIN_STATE():
+
+    print("AA 55 BB 44")
+    #print(GENERAL_GET(GET_INFO_PIN_STATE_cmd))
+    data = GENERAL_GET(GET_INFO_PIN_STATE_cmd)
+    print("".join("%02x " % i for i in data).upper())
 
 
 #===============SET COMMAND===============#
 #display like 0x00 type
 #data = bytearray(b'hello')
 #print("".join("\\x%02x" % i for i in data))
-    
+
+def SET_STATUS_LED(state):
+
+    #STATUS_LED state 0: LED off / 1: LED on / 2~65534:Pulse time length (ms)
+    print("AA 55 BF 40 00 00 su ~s")
+    #print(LED_SET(SET_STATUS_LED_cmd,state)) #there is no key for SET_STATUS_LED 
+    data = LED_SET(SET_STATUS_LED_cmd,state)
+    print("".join("%02x " % i for i in data).upper())
+
+
 def SET_PIN_CO2_CAL(state):
 
+    #CO2_CAL state default:1 / set to 0 to calibrate CO2
     print("AA 55 C0 3F 53 38 4C 50 01 su ~s")
     #print(GENERAL_SET(SET_PIN_CO2_CAL_cmd,SET_PIN_CO2_CAL_key,state))
     data = GENERAL_SET(SET_PIN_CO2_CAL_cmd,SET_PIN_CO2_CAL_key,state)
@@ -243,6 +315,7 @@ def SET_PIN_CO2_CAL(state):
 
 def SET_PIN_PMS_RESET(state):
 
+    #PMS_RESET state default:1 / set to 0 to reset PM_sensor
     print("AA 55 C1 3E 50 4D 53 33 01 su ~s")
     #print(GENERAL_SET(SET_PIN_PMS_RESET_cmd,SET_PIN_PMS_RESET_key,state))
     data = GENERAL_SET(SET_PIN_PMS_RESET_cmd,SET_PIN_PMS_RESET_key,state)
@@ -251,6 +324,7 @@ def SET_PIN_PMS_RESET(state):
 
 def SET_PIN_PMS_SET(state):
 
+    #PMS_SET state default:1 / set to 0 to disable PM_sensor
     print("AA 55 C2 3D 33 30 30 33 01 su ~s")
     #print(GENERAL_SET(SET_PIN_PMS_SET_cmd,SET_PIN_PMS_SET_key,state))
     data = GENERAL_SET(SET_PIN_PMS_SET_cmd,SET_PIN_PMS_SET_key,state)
@@ -275,6 +349,7 @@ def SET_PIN_NBIOT_SLEEP(state):
 
 def SET_PIN_LED_ALL(state):
 
+    #PIN_LED state default:1 / set to 0 to turnoff all LED
     print("AA 55 C5 3A 53 4C 45 44 01 su ~s")
     #print(GENERAL_SET(SET_PIN_LED_ALL_cmd,SET_PIN_LED_ALL_key,state))
     data = GENERAL_SET(SET_PIN_LED_ALL_cmd,SET_PIN_LED_ALL_key,state)
@@ -282,7 +357,7 @@ def SET_PIN_LED_ALL(state):
 
 def SET_POLLING_SENSOR(POLL_TEMP,POLL_CO2,POLL_TVOC,POLL_LIGHT,POLL_PMS,POLL_RTC):
 
-    print("AA 55 C6 39 00 00 00 00 00 00 00 su ~s")
+    print("AA 55 C6 39 00 00 00 00 00 00 su ~s")
     #print(POLLING_SET(POLL_TEMP,POLL_CO2,POLL_TVOC,POLL_LIGHT,POLL_PMS,POLL_RTC))
     data = POLLING_SET(POLL_TEMP,POLL_CO2,POLL_TVOC,POLL_LIGHT,POLL_PMS,POLL_RTC)
     print("".join("%02x " % i for i in data).upper())
@@ -290,16 +365,21 @@ def SET_POLLING_SENSOR(POLL_TEMP,POLL_CO2,POLL_TVOC,POLL_LIGHT,POLL_PMS,POLL_RTC
 
 def SET_RTC_DATE_TIME(YY,MM,DD,hh,mm,ss):
 
-    print("AA 55 C7 38 00 01 01 00 00 00 00 su ~s")
+    print("AA 55 C7 38 00 01 01 00 00 00 su ~s")
     #print(RTC_SET(YY,MM,DD,hh,mm,ss))
     data = RTC_SET(YY,MM,DD,hh,mm,ss)
     print("".join("%02x " % i for i in data).upper())
 
+def SET_PIN_FAN_ALL(state):
+
+    print("AA 55 C8 37 46 41 4E 63 01 su ~s")
+    #print(GENERAL_SET(SET_PIN_FAN_ALL_cmd,SET_PIN_FAN_ALL_key,state))
+    data = GENERAL_SET(SET_PIN_FAN_ALL_cmd,SET_PIN_FAN_ALL_key,state)
+    print("".join("%02x " % i for i in data).upper())
 
 
 #===============PROTOCOL COMMAND===============#
 
-# TO DO
 
 def PROTOCOL_I2C_WRITE(i2c_address,i2c_data,freq = 0):
     cmd = PROTOCOL_I2C_WRITE_cmd
@@ -366,7 +446,70 @@ def PROTOCOL_UART_BEGIN(UART_PORT,BAUD = 0,FORMAT = 0):
 
     
 def PROTOCOL_UART_TX_RX(UART_PORT,TX_DATA,RX_LENGTH,TIMEOUT):
+    #TX_DATA_length : 2 Byte / RX_LENGTH : 2 Byte / TIMEOUT : 2 Byte
     cmd = PROTOCOL_UART_TX_RX_cmd
+    host_send = bytearray()
+    host_send.append(leading_cmd)
+    host_send.append(bit_reverse(leading_cmd))
+    host_send.append(cmd)
+    host_send.append(bit_reverse(cmd))
+    #choose UART port (0~2) (0:NB-IOT/1:Hardware UART/2:Software UART)
+    host_send.append(UART_PORT)
+    
+    #UART TX data length (TX_DATA is bytearray)
+    TX_DATA_length = convert_2_byte(TX_DATA_length)
+    host_send.extend(TX_DATA_length)
+    
+    #recive length of RX data
+    RX_LENGTH = convert_2_byte(RX_LENGTH)
+    host_send.extend(RX_LENGTH)
+    
+    #timeout time for RX data
+    TIMEOUT = convert_4_byte(TIMEOUT)
+    host_send.extend(TIMEOUT)
+
+    #UART TX data 
+    host_send.append(TX_DATA)
+    #checksum
+    sum_byte = crc_calc(host_send)
+    host_send.append(sum_byte)
+    host_send.append(bit_reverse(sum_byte))
+    
+    return host_send
+
+
+def PROTOCOL_UART_TXRX_EX(UART_PORT,TX_DATA,BYTE_TIMEOUT,WAIT_TIMEOUT):
+    #TX_DATA_length : 2 Byte / BYTE_TIMEOUT : 1 Byte / WAIT_TIMEOUT : 2 Byte
+    cmd = PROTOCOL_UART_TXRX_EX_cmd
+    host_send = bytearray()
+    host_send.append(leading_cmd)
+    host_send.append(bit_reverse(leading_cmd))
+    host_send.append(cmd)
+    host_send.append(bit_reverse(cmd))
+    #choose UART port (0~2) (0:NB-IOT/1:Hardware UART/2:Software UART)
+    host_send.append(UART_PORT)
+    #UART TX data length (TX_DATA is bytearray)
+    TX_DATA_length = convert_2_byte(TX_DATA_length)
+    host_send.extend(TX_DATA_length)
+    #BYTE_TIMEOUT :相鄰BYTE間隔時間的最大值 數值設為0 定義為 0.5ms
+    host_send.append(BYTE_TIMEOUT)
+    #WAIT_TIMEOUT :接收RX_DATA 的TIMEOUT 數值範圍 0~600000ms
+    WAIT_TIMEOUT = convert_4_byte(WAIT_TIMEOUT)
+    host_send.extend(WAIT_TIMEOUT)
+    
+    #UART TX data 
+    host_send.append(TX_DATA)
+    #checksum
+    sum_byte = crc_calc(host_send)
+    host_send.append(sum_byte)
+    host_send.append(bit_reverse(sum_byte))
+
+    return host_send
+
+
+def ENABLE_UART_ACTIVE_RX(UART_PORT,ENABLE,POLLING_TIME,BYTE_TIMEOUT,RCV_TIMEOUT):
+    #TRCV_TIMEOUT : 2 Byte
+    cmd = ENABLE_UART_ACTIVE_RX_cmd
     host_send = bytearray()
     host_send.append(leading_cmd)
     host_send.append(bit_reverse(leading_cmd))
@@ -377,20 +520,22 @@ def PROTOCOL_UART_TX_RX(UART_PORT,TX_DATA,RX_LENGTH,TIMEOUT):
     #UART TX data length (TX_DATA is bytearray)
     host_send.append(TX_DATA_length[0])
     host_send.append(TX_DATA_length[1])
-    #recive length of RX data
-    host_send.append(RX_LENGTH[0])
-    host_send.append(RX_LENGTH[1])
-    #timeout time for RX data
-    host_send.append(TIMEOUT[0])
-    host_send.append(TIMEOUT[1])
+    #BYTE_TIMEOUT :相鄰BYTE間隔時間的最大值 數值設為0 定義為 0.5ms
+    host_send.append(BYTE_TIMEOUT)
+    #WAIT_TIMEOUT :接收RX_DATA 的TIMEOUT 數值範圍 0~600000ms
+    WAIT_TIMEOUT = convert_2_byte(WAIT_TIMEOUT)
+    host_send.extend(WAIT_TIMEOUT)
+    
     #UART TX data 
     host_send.append(TX_DATA)
     #checksum
     sum_byte = crc_calc(host_send)
     host_send.append(sum_byte)
     host_send.append(bit_reverse(sum_byte))
-    
+
     return host_send
+
+
 
 
 #===============TEST ALL ===============#
@@ -423,6 +568,9 @@ GET_RTC_DATE_TIME()
 print("\n")
 
 #===============TEST SET===============#
+SET_STATUS_LED(0)
+SET_STATUS_LED(1)
+print("\n")
 SET_PIN_CO2_CAL(0)
 SET_PIN_CO2_CAL(1)
 print("\n")
@@ -443,7 +591,7 @@ SET_PIN_LED_ALL(1)
 print("\n")
 SET_POLLING_SENSOR(1,1,1,1,1,1)
 print("\n")
-SET_RTC_DATE_TIME(19,12,8,12,30,31)
+SET_RTC_DATE_TIME(0,1,1,0,0,0)
 print("\n")
 
 #===============TEST PROTOCOL===============#
