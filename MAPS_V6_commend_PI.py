@@ -395,7 +395,7 @@ def PROTOCOL_I2C_WRITE(i2c_address,i2c_data,freq = 0):
     #i2c data length
     host_send.append(len(i2c_data))
     #i2c data(N-byte bytearray)
-    host_send.append(i2c_data)
+    host_send.extend(i2c_data)
     #checksum
     sum_byte = crc_calc(host_send)
     host_send.append(sum_byte)
@@ -457,7 +457,7 @@ def PROTOCOL_UART_TX_RX(UART_PORT,TX_DATA,RX_LENGTH,TIMEOUT):
     host_send.append(UART_PORT)
     
     #UART TX data length (TX_DATA is bytearray)
-    TX_DATA_length = convert_2_byte(TX_DATA_length)
+    TX_DATA_length = convert_2_byte(len(TX_DATA))
     host_send.extend(TX_DATA_length)
     
     #recive length of RX data
@@ -469,7 +469,7 @@ def PROTOCOL_UART_TX_RX(UART_PORT,TX_DATA,RX_LENGTH,TIMEOUT):
     host_send.extend(TIMEOUT)
 
     #UART TX data 
-    host_send.append(TX_DATA)
+    host_send.extend(TX_DATA)
     #checksum
     sum_byte = crc_calc(host_send)
     host_send.append(sum_byte)
@@ -489,7 +489,7 @@ def PROTOCOL_UART_TXRX_EX(UART_PORT,TX_DATA,BYTE_TIMEOUT,WAIT_TIMEOUT):
     #choose UART port (0~2) (0:NB-IOT/1:Hardware UART/2:Software UART)
     host_send.append(UART_PORT)
     #UART TX data length (TX_DATA is bytearray)
-    TX_DATA_length = convert_2_byte(TX_DATA_length)
+    TX_DATA_length = convert_2_byte(len(TX_DATA))
     host_send.extend(TX_DATA_length)
     #BYTE_TIMEOUT :相鄰BYTE間隔時間的最大值 數值設為0 定義為 0.5ms
     host_send.append(BYTE_TIMEOUT)
@@ -498,7 +498,7 @@ def PROTOCOL_UART_TXRX_EX(UART_PORT,TX_DATA,BYTE_TIMEOUT,WAIT_TIMEOUT):
     host_send.extend(WAIT_TIMEOUT)
     
     #UART TX data 
-    host_send.append(TX_DATA)
+    host_send.extend(TX_DATA)
     #checksum
     sum_byte = crc_calc(host_send)
     host_send.append(sum_byte)
@@ -517,21 +517,20 @@ def ENABLE_UART_ACTIVE_RX(UART_PORT,ENABLE,POLLING_TIME,BYTE_TIMEOUT,RCV_TIMEOUT
     host_send.append(bit_reverse(cmd))
     #choose UART port (0~2) (0:NB-IOT/1:Hardware UART/2:Software UART)
     host_send.append(UART_PORT)
-    #UART TX data length (TX_DATA is bytearray)
-    host_send.append(TX_DATA_length[0])
-    host_send.append(TX_DATA_length[1])
+    #UART ENABLE
+    host_send.append(ENABLE)
+    #POLLING_TIME
+    host_send.append(POLLING_TIME)
     #BYTE_TIMEOUT :相鄰BYTE間隔時間的最大值 數值設為0 定義為 0.5ms
     host_send.append(BYTE_TIMEOUT)
-    #WAIT_TIMEOUT :接收RX_DATA 的TIMEOUT 數值範圍 0~600000ms
-    WAIT_TIMEOUT = convert_2_byte(WAIT_TIMEOUT)
-    host_send.extend(WAIT_TIMEOUT)
-    
-    #UART TX data 
-    host_send.append(TX_DATA)
+    #RCV_TIMEOUT 
+    RCV_TIMEOUT = convert_2_byte(RCV_TIMEOUT)
+    host_send.extend(RCV_TIMEOUT)
     #checksum
     sum_byte = crc_calc(host_send)
     host_send.append(sum_byte)
     host_send.append(bit_reverse(sum_byte))
+
 
     return host_send
 
@@ -544,61 +543,171 @@ print("START")
 
 
 #===============TEST GET===============#
+
+print("===============TEST GET===============\n")
+
+print("GET_TEMP_HUM:")
 GET_TEMP_HUM()
 print("\n")
+
+print("GET_CO2:")
 GET_CO2()
 print("\n")
+
+print("GET_TVOC:")
 GET_TVOC()
 print("\n")
+
+print("GET_LIGHT:")
 GET_LIGHT()
 print("\n")
+
+print("GET_PMS:")
 GET_PMS()
 print("\n")
+
+print("GET_SENSOR_ALL:")
 GET_SENSOR_ALL()
 print("\n")
+
+print("GET_INFO_VERSION:")
 GET_INFO_VERSION()
 print("\n")
+
+print("GET_INFO_RUNTIME:")
 GET_INFO_RUNTIME()
 print("\n")
+
+print("GET_INFO_ERROR_LOG:")
 GET_INFO_ERROR_LOG()
 print("\n")
+
+print("GET_INFO_SENSOR_POR:")
 GET_INFO_SENSOR_POR()
 print("\n")
+
+print("GET_RTC_DATE_TIME:")
 GET_RTC_DATE_TIME()
 print("\n")
 
+print("GET_INFO_PIN_STATE:")
+GET_INFO_PIN_STATE()
+print("\n")
+
 #===============TEST SET===============#
+
+print("===============TEST SET===============\n")
+
+print("SET_STATUS_LED:")
 SET_STATUS_LED(0)
 SET_STATUS_LED(1)
+SET_STATUS_LED(2567)
 print("\n")
+
+print("SET_PIN_CO2_CAL:")
 SET_PIN_CO2_CAL(0)
 SET_PIN_CO2_CAL(1)
 print("\n")
+
+print("SET_PIN_PMS_RESET:")
 SET_PIN_PMS_RESET(0)
 SET_PIN_PMS_RESET(1)
 print("\n")
+
+print("SET_PIN_PMS_SET:")
 SET_PIN_PMS_SET(0)
 SET_PIN_PMS_SET(1)
 print("\n")
+
+print("SET_PIN_NBIOT_PWRKEY:")
 SET_PIN_NBIOT_PWRKEY(0)
 SET_PIN_NBIOT_PWRKEY(1)
 print("\n")
+
+print("SET_PIN_NBIOT_SLEEP:")
 SET_PIN_NBIOT_SLEEP(0)
 SET_PIN_NBIOT_SLEEP(1)
 print("\n")
+
+print("SET_PIN_LED_ALL:")
 SET_PIN_LED_ALL(0)
 SET_PIN_LED_ALL(1)
 print("\n")
+
+print("SET_POLLING_SENSOR:")
 SET_POLLING_SENSOR(1,1,1,1,1,1)
 print("\n")
+
+print("SET_RTC_DATE_TIME:")
 SET_RTC_DATE_TIME(0,1,1,0,0,0)
+print("\n")
+
+print("SET_PIN_FAN_ALL:")
+SET_PIN_FAN_ALL(0)
+SET_PIN_FAN_ALL(1)
 print("\n")
 
 #===============TEST PROTOCOL===============#
 
-# TO DO
+print("===============TEST PROTOCOL===============\n")
+
+#i2c_address,i2c_data
+i2c_address = 0X3C
+
+UART_PORT = 0
+BAUD = 0
+i2c_data = bytearray([0X01,0X02,0X03,0X04])
+TX_DATA = bytearray([0X01,0X02,0X03,0X04])
+
+i2c_read_length = len(i2c_data)
+RX_LENGTH = 5
+TIMEOUT = 0
+WAIT_TIMEOUT = 5
+ENABLE = 1
+POLLING_TIME = 0
+BYTE_TIMEOUT = 10
+RCV_TIMEOUT = 15
+
+print("PROTOCOL_I2C_WRITE:")
+print("AA 55 CA 35 00 3C 04 01 02 03 04 su ~s")
+data = PROTOCOL_I2C_WRITE(i2c_address,i2c_data)
+print("".join("%02x " % i for i in data).upper())
+print("\n")
 
 
+print("PROTOCOL_I2C_READ:")
+print("AA 55 CB 34 00 3C 04 su ~s")
+data = PROTOCOL_I2C_READ(i2c_address,i2c_read_length)
+print("".join("%02x " % i for i in data).upper())
+print("\n")
+
+
+print("PROTOCOL_UART_BEGIN:")
+print("AA 55 CC 33 00 00 00 su ~s")
+data = PROTOCOL_UART_BEGIN(UART_PORT,BAUD)
+print("".join("%02x " % i for i in data).upper())
+print("\n")
+
+
+print("PROTOCOL_UART_TX_RX:")
+print("AA 55 CD 32 00 00 04 00 05 00 00 00 00 01 02 03 04 su ~s")
+data = PROTOCOL_UART_TX_RX(UART_PORT,TX_DATA,RX_LENGTH,TIMEOUT)
+print("".join("%02x " % i for i in data).upper())
+print("\n")
+
+
+print("PROTOCOL_UART_TXRX_EX:")
+print("AA 55 CE 31 00 00 04 0A 00 00 00 05 01 02 03 04 su ~s")
+data = PROTOCOL_UART_TXRX_EX(UART_PORT,TX_DATA,BYTE_TIMEOUT,WAIT_TIMEOUT)
+print("".join("%02x " % i for i in data).upper())
+print("\n")
+
+
+print("ENABLE_UART_ACTIVE_RX:")
+print("AA 55 CF 30 00 01 00 0A 00 0F su ~s")
+data = ENABLE_UART_ACTIVE_RX(UART_PORT,ENABLE,POLLING_TIME,BYTE_TIMEOUT,RCV_TIMEOUT)
+print("".join("%02x " % i for i in data).upper())
+print("\n")
 
 
 #ser=serial.Serial("COM11",115200,timeout=0.5)
