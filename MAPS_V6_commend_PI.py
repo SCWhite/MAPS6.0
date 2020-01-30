@@ -1,4 +1,5 @@
-#import serial
+import serial
+import time
 
 #command code
 leading_cmd             = 0xAA
@@ -147,6 +148,12 @@ def GENERAL_GET(cmd):
     host_send.append(bit_reverse(cmd))
     #b_arr = bytearray(host_send)
 
+##    print("****")
+##    print(host_send)
+##    print(type(host_send))
+##    print("****")
+    
+
     return host_send
 
 def GENERAL_SET(cmd,key,state):
@@ -171,7 +178,7 @@ def GENERAL_SET(cmd,key,state):
 
 
 def GENERAL_RESPONSE(cmd,recive_byte):
-    data = ser.readline(recive_byte)
+    data = ser.read(recive_byte)
 
     return data
 
@@ -255,6 +262,13 @@ def GET_TEMP_HUM():
     #print(GENERAL_GET(GET_TEMP_HUM_cmd))
     data = GENERAL_GET(GET_TEMP_HUM_cmd)
     print("".join("%02x " % i for i in data).upper())
+    
+    ser.write(bytes(data))
+
+    reveive_data = GENERAL_RESPONSE(GET_TEMP_HUM_cmd,GET_TEMP_HUM_resp)
+    print(reveive_data)
+    print("".join("%02x " % i for i in reveive_data).upper())
+
 
 def GET_CO2():
 
@@ -262,6 +276,12 @@ def GET_CO2():
     #print(GENERAL_GET(GET_CO2_cmd))
     data = GENERAL_GET(GET_CO2_cmd)
     print("".join("%02x " % i for i in data).upper())
+    
+    ser.write(bytes(data))
+
+    reveive_data = GENERAL_RESPONSE(GET_CO2_cmd,GET_CO2_resp)
+    print(reveive_data)
+    print("".join("%02x " % i for i in reveive_data).upper())
 
 def GET_TVOC():
 
@@ -269,6 +289,12 @@ def GET_TVOC():
     #print(GENERAL_GET(GET_TVOC_cmd))
     data = GENERAL_GET(GET_TVOC_cmd)
     print("".join("%02x " % i for i in data).upper())
+    
+    ser.write(bytes(data))
+
+    reveive_data = GENERAL_RESPONSE(GET_TVOC_cmd,GET_TVOC_resp)
+    print(reveive_data)
+    print("".join("%02x " % i for i in reveive_data).upper())
 
 def GET_LIGHT():
 
@@ -276,6 +302,12 @@ def GET_LIGHT():
     #print(GENERAL_GET(GET_LIGHT_cmd))
     data = GENERAL_GET(GET_LIGHT_cmd)
     print("".join("%02x " % i for i in data).upper())
+    
+    ser.write(bytes(data))
+
+    reveive_data = GENERAL_RESPONSE(GET_LIGHT_cmd,GET_LIGHT_resp)
+    print(reveive_data)
+    print("".join("%02x " % i for i in reveive_data).upper())
 
 def GET_PMS():
 
@@ -284,12 +316,24 @@ def GET_PMS():
     data = GENERAL_GET(GET_PMS_cmd)
     print("".join("%02x " % i for i in data).upper())
     
+    ser.write(bytes(data))
+
+    reveive_data = GENERAL_RESPONSE(GET_PMS_cmd,GET_PMS_resp)
+    print(reveive_data)
+    print("".join("%02x " % i for i in reveive_data).upper())
+    
 def GET_SENSOR_ALL():
 
     print("AA 55 B5 4A")
     #print(GENERAL_GET(GET_SENSOR_ALL_cmd))
     data = GENERAL_GET(GET_SENSOR_ALL_cmd)
     print("".join("%02x " % i for i in data).upper())
+    
+    ser.write(bytes(data))
+
+    reveive_data = GENERAL_RESPONSE(GET_SENSOR_ALL_cmd,GET_SENSOR_ALL_resp)
+    print(reveive_data)
+    print("".join("%02x " % i for i in reveive_data).upper())
 
 def GET_INFO_VERSION():
 
@@ -297,6 +341,12 @@ def GET_INFO_VERSION():
     #print(GENERAL_GET(GET_INFO_VERSION_cmd))
     data = GENERAL_GET(GET_INFO_VERSION_cmd)
     print("".join("%02x " % i for i in data).upper())
+    
+    ser.write(bytes(data))
+
+    reveive_data = GENERAL_RESPONSE(GET_INFO_VERSION_cmd,GET_INFO_VERSION_resp)
+    print(reveive_data)
+    print("".join("%02x " % i for i in reveive_data).upper())
 
 def GET_INFO_RUNTIME():
 
@@ -304,6 +354,12 @@ def GET_INFO_RUNTIME():
     #print(GENERAL_GET(GET_INFO_RUNTIME_cmd))
     data = GENERAL_GET(GET_INFO_RUNTIME_cmd)
     print("".join("%02x " % i for i in data).upper())
+    
+    ser.write(bytes(data))
+
+    reveive_data = GENERAL_RESPONSE(GET_INFO_RUNTIME_cmd,GET_INFO_RUNTIME_resp)
+    print(reveive_data)
+    print("".join("%02x " % i for i in reveive_data).upper())
 
 def GET_INFO_ERROR_LOG():
 
@@ -312,12 +368,24 @@ def GET_INFO_ERROR_LOG():
     data = GENERAL_GET(GET_INFO_ERROR_LOG_cmd)
     print("".join("%02x " % i for i in data).upper())
     
+    ser.write(bytes(data))
+
+    reveive_data = GENERAL_RESPONSE(GET_INFO_ERROR_LOG_cmd,GET_INFO_ERROR_LOG_resp)
+    print(reveive_data)
+    print("".join("%02x " % i for i in reveive_data).upper())
+    
 def GET_INFO_SENSOR_POR():
 
     print("AA 55 B9 46")
     #print(GENERAL_GET(GET_INFO_SENSOR_POR_cmd))
     data = GENERAL_GET(GET_INFO_SENSOR_POR_cmd)
     print("".join("%02x " % i for i in data).upper())
+    
+    ser.write(bytes(data))
+
+    reveive_data = GENERAL_RESPONSE(GET_INFO_SENSOR_POR_cmd,GET_INFO_SENSOR_POR_resp)
+    print(reveive_data)
+    print("".join("%02x " % i for i in reveive_data).upper())
 
 def GET_RTC_DATE_TIME():
 
@@ -325,6 +393,12 @@ def GET_RTC_DATE_TIME():
     #print(GENERAL_GET(GET_RTC_DATE_TIME_cmd))
     data = GENERAL_GET(GET_RTC_DATE_TIME_cmd)
     print("".join("%02x " % i for i in data).upper())
+    
+    ser.write(bytes(data))
+
+    reveive_data = GENERAL_RESPONSE(GET_RTC_DATE_TIME_cmd,GET_RTC_DATE_TIME_resp)
+    print(reveive_data)
+    print("".join("%02x " % i for i in reveive_data).upper())
 
 def GET_INFO_PIN_STATE():
 
@@ -332,6 +406,12 @@ def GET_INFO_PIN_STATE():
     #print(GENERAL_GET(GET_INFO_PIN_STATE_cmd))
     data = GENERAL_GET(GET_INFO_PIN_STATE_cmd)
     print("".join("%02x " % i for i in data).upper())
+    
+    ser.write(bytes(data))
+
+    reveive_data = GENERAL_RESPONSE(GET_INFO_PIN_STATE_cmd,GET_INFO_PIN_STATE_resp)
+    print(reveive_data)
+    print("".join("%02x " % i for i in reveive_data).upper())
 
 
 #===============SET COMMAND===============#
@@ -583,8 +663,8 @@ def ENABLE_UART_ACTIVE_RX(UART_PORT,ENABLE,POLLING_TIME,BYTE_TIMEOUT,RCV_TIMEOUT
 
 #===============TEST ALL ===============#
 print("START")
-
-
+ser=serial.Serial("COM57",115200,timeout=1)
+time.sleep(5)
 
 #===============TEST GET===============#
 
@@ -756,7 +836,7 @@ print("\n")
 
 #ser=serial.Serial("COM11",115200,timeout=0.5)
 
-
+ser.close()
 print("OK")
 
 
