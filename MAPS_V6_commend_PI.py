@@ -44,6 +44,40 @@ PROTOCOL_UART_TXRX_EX_cmd = 0xCE # V1.1 (New)
 ENABLE_UART_ACTIVE_RX_cmd = 0xCF # V1.1 (New)
 ECHO_UART_ACTIVE_RX_cmd   = 0xCF # V1.1 (New)
 
+#expect receive
+
+GET_TEMP_HUM_resp        = 8
+GET_CO2_resp             = 8
+GET_TVOC_resp            = 16
+GET_LIGHT_resp           = 16
+GET_PMS_resp             = 16
+GET_SENSOR_ALL_resp      = 48
+GET_INFO_VERSION_resp    = 6
+GET_INFO_RUNTIME_resp    = 9
+GET_INFO_ERROR_LOG_resp  = 16
+GET_INFO_SENSOR_POR_resp = 16 # V1.1 (Update)
+GET_RTC_DATE_TIME_resp   = 10
+GET_INFO_PIN_STATE_resp  = 11 # V1.1 (New)
+
+SET_STATUS_LED_resp       = 4 # V1.1 (New)
+SET_PIN_CO2_CAL_resp      = 4
+SET_PIN_PMS_RESET_resp    = 4
+SET_PIN_PMS_SET_resp      = 4
+SET_PIN_NBIOT_PWRKEY_resp = 4
+SET_PIN_NBIOT_SLEEP_resp  = 4
+SET_PIN_LED_ALL_resp      = 4
+SET_POLLING_SENSOR_resp   = 4 # V1.1 (Update)
+SET_RTC_DATE_TIME_resp    = 4 # V1.1 (Update)
+SET_PIN_FAN_ALL_resp      = 4 # V1.1 (New)
+
+PROTOCOL_I2C_WRITE_resp    = 4
+#PROTOCOL_I2C_READ_resp     = 6+n
+PROTOCOL_UART_BEGIN_resp   = 4
+#PROTOCOL_UART_TX_RX_resp   = 6+n # V1.1 (Update)
+#PROTOCOL_UART_TXRX_EX_resp = 8+n # V1.1 (New)
+
+ENABLE_UART_ACTIVE_RX_resp = 4 # V1.1 (New)
+#ECHO_UART_ACTIVE_RX_resp   = 7+n # V1.1 (New)
 
 #==========CONVERT FUNC==========#
 
@@ -134,6 +168,16 @@ def GENERAL_SET(cmd,key,state):
     host_send.append(bit_reverse(sum_byte))
     
     return host_send
+
+
+def GENERAL_RESPONSE(cmd,recive_byte):
+    data = ser.readline(recive_byte)
+
+    return data
+
+    
+
+    
 
 
 def POLLING_SET(temp_sw,co2_sw,tvoc_sw,light_sw,pms_sw,rtc_sw):
