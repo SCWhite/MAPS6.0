@@ -269,6 +269,11 @@ def GET_TEMP_HUM():
     print(reveive_data)
     print("".join("%02x " % i for i in reveive_data).upper())
 
+    #
+    TEMP = (reveive_data[3]*256 + reveive_data[2])/100
+    HUM  = (reveive_data[5]*256 + reveive_data[4])/100
+    #
+
 
 def GET_CO2():
 
@@ -283,6 +288,11 @@ def GET_CO2():
     print(reveive_data)
     print("".join("%02x " % i for i in reveive_data).upper())
 
+    #
+    CO2      = (reveive_data[3]*256 + reveive_data[2])
+    AVE_CO2  = (reveive_data[5]*256 + reveive_data[4])
+    #
+
 def GET_TVOC():
 
     print("AA 55 B2 4D")
@@ -295,6 +305,15 @@ def GET_TVOC():
     reveive_data = GENERAL_RESPONSE(GET_TVOC_cmd,GET_TVOC_resp)
     print(reveive_data)
     print("".join("%02x " % i for i in reveive_data).upper())
+
+    #
+    TVOC           = (reveive_data[3]*256 + reveive_data[2])
+    eCO2           = (reveive_data[5]*256 + reveive_data[4])
+    S_H2           = (reveive_data[7]*256 + reveive_data[6])
+    S_ETHANOL      = (reveive_data[9]*256 + reveive_data[8])
+    BASELINE_TVOC  = (reveive_data[11]*256 + reveive_data[10])
+    BASELINE_eCO2  = (reveive_data[13]*256 + reveive_data[12])
+    #
 
 def GET_LIGHT():
 
@@ -309,6 +328,15 @@ def GET_LIGHT():
     print(reveive_data)
     print("".join("%02x " % i for i in reveive_data).upper())
 
+    #
+    Illuminance         = (reveive_data[3]*256 + reveive_data[2])
+    ColorTemperature    = (reveive_data[5]*256 + reveive_data[4])
+    CH_R                = (reveive_data[7]*256 + reveive_data[6])
+    CH_G                = (reveive_data[9]*256 + reveive_data[8])
+    CH_B                = (reveive_data[11]*256 + reveive_data[10])
+    CH_C                = (reveive_data[13]*256 + reveive_data[12])
+    #
+
 def GET_PMS():
 
     print("AA 55 B4 4B")
@@ -321,6 +349,15 @@ def GET_PMS():
     reveive_data = GENERAL_RESPONSE(GET_PMS_cmd,GET_PMS_resp)
     print(reveive_data)
     print("".join("%02x " % i for i in reveive_data).upper())
+
+    #
+    PM1_AE   = (reveive_data[3]*256 + reveive_data[2])
+    PM25_AE  = (reveive_data[5]*256 + reveive_data[4])
+    PM10_AE  = (reveive_data[7]*256 + reveive_data[6])
+    PM1_SP   = (reveive_data[9]*256 + reveive_data[8])
+    PM25_SP  = (reveive_data[11]*256 + reveive_data[10])
+    PM10_SP  = (reveive_data[13]*256 + reveive_data[12])
+    #
     
 def GET_SENSOR_ALL():
 
@@ -335,6 +372,31 @@ def GET_SENSOR_ALL():
     print(reveive_data)
     print("".join("%02x " % i for i in reveive_data).upper())
 
+    #
+    TEMP                = (reveive_data[3]*256 + reveive_data[2])/100
+    HUM                 = (reveive_data[5]*256 + reveive_data[4])/100
+    CO2                 = (reveive_data[7]*256 + reveive_data[6])
+    AVE_CO2             = (reveive_data[9]*256 + reveive_data[8])
+    TVOC                = (reveive_data[11]*256 + reveive_data[10])
+    eCO2                = (reveive_data[13]*256 + reveive_data[12])
+    S_H2                = (reveive_data[15]*256 + reveive_data[14])
+    S_ETHANOL           = (reveive_data[17]*256 + reveive_data[16])
+    BASELINE_TVOC       = (reveive_data[19]*256 + reveive_data[18])
+    BASELINE_eCO2       = (reveive_data[21]*256 + reveive_data[20])
+    Illuminance         = (reveive_data[23]*256 + reveive_data[22])
+    ColorTemperature    = (reveive_data[25]*256 + reveive_data[24])
+    CH_R                = (reveive_data[27]*256 + reveive_data[26])
+    CH_G                = (reveive_data[29]*256 + reveive_data[28])
+    CH_B                = (reveive_data[31]*256 + reveive_data[30])
+    CH_C                = (reveive_data[33]*256 + reveive_data[32])
+    PM1_AE              = (reveive_data[35]*256 + reveive_data[34])
+    PM25_AE             = (reveive_data[37]*256 + reveive_data[36])
+    PM10_AE             = (reveive_data[39]*256 + reveive_data[38])
+    PM1_SP              = (reveive_data[41]*256 + reveive_data[40])
+    PM25_SP             = (reveive_data[43]*256 + reveive_data[42])
+    PM10_SP             = (reveive_data[45]*256 + reveive_data[44])
+    #
+
 def GET_INFO_VERSION():
 
     print("AA 55 B6 49")
@@ -347,6 +409,10 @@ def GET_INFO_VERSION():
     reveive_data = GENERAL_RESPONSE(GET_INFO_VERSION_cmd,GET_INFO_VERSION_resp)
     print(reveive_data)
     print("".join("%02x " % i for i in reveive_data).upper())
+
+    #
+    VERSION = (reveive_data[3]*256 + reveive_data[2])
+    #
 
 def GET_INFO_RUNTIME():
 
@@ -361,6 +427,13 @@ def GET_INFO_RUNTIME():
     print(reveive_data)
     print("".join("%02x " % i for i in reveive_data).upper())
 
+    #
+    RT_DAY   = (reveive_data[3]*256 + reveive_data[2])
+    RT_HOUR  = (reveive_data[4])
+    RT_MIN   = (reveive_data[5])
+    RT_SEC   = (reveive_data[6])
+    #
+
 def GET_INFO_ERROR_LOG():
 
     print("AA 55 B8 47")
@@ -373,6 +446,15 @@ def GET_INFO_ERROR_LOG():
     reveive_data = GENERAL_RESPONSE(GET_INFO_ERROR_LOG_cmd,GET_INFO_ERROR_LOG_resp)
     print(reveive_data)
     print("".join("%02x " % i for i in reveive_data).upper())
+
+    #
+    ERROR_TEMP_HUM  = (reveive_data[3]*256 + reveive_data[2])
+    ERROR_CO2       = (reveive_data[5]*256 + reveive_data[4])
+    ERROR_TVOC      = (reveive_data[7]*256 + reveive_data[6])
+    ERROR_LIGHT     = (reveive_data[9]*256 + reveive_data[8])
+    ERROR_PMS       = (reveive_data[11]*256 + reveive_data[10])
+    ERROR_RTC       = (reveive_data[13]*256 + reveive_data[12])
+    #
     
 def GET_INFO_SENSOR_POR():
 
@@ -387,6 +469,21 @@ def GET_INFO_SENSOR_POR():
     print(reveive_data)
     print("".join("%02x " % i for i in reveive_data).upper())
 
+    #
+    POR_TEMP_HUM  = (reveive_data[2])
+    POR_CO2       = (reveive_data[3])
+    POR_TVOC      = (reveive_data[4])
+    POR_LIGHT     = (reveive_data[5])
+    POR_PMS       = (reveive_data[6])
+    POR_RTC       = (reveive_data[7])
+    POLL_TEMP_HUM = (reveive_data[8])
+    POLL_CO2      = (reveive_data[9])
+    POLL_TVOC     = (reveive_data[10])
+    POLL_LIGHT    = (reveive_data[11])
+    POLL_PMS      = (reveive_data[12])
+    POLL_RTC      = (reveive_data[13])
+    #
+
 def GET_RTC_DATE_TIME():
 
     print("AA 55 BA 45")
@@ -400,6 +497,15 @@ def GET_RTC_DATE_TIME():
     print(reveive_data)
     print("".join("%02x " % i for i in reveive_data).upper())
 
+    #
+    RTC_YY  = (reveive_data[2])
+    RTC_MM  = (reveive_data[3])
+    RTC_DD  = (reveive_data[4])
+    RTC_hh  = (reveive_data[5])
+    RTC_mm  = (reveive_data[6])
+    RTC_ss  = (reveive_data[7])
+    #
+
 def GET_INFO_PIN_STATE():
 
     print("AA 55 BB 44")
@@ -412,6 +518,16 @@ def GET_INFO_PIN_STATE():
     reveive_data = GENERAL_RESPONSE(GET_INFO_PIN_STATE_cmd,GET_INFO_PIN_STATE_resp)
     print(reveive_data)
     print("".join("%02x " % i for i in reveive_data).upper())
+
+    #
+    PIN_CO2_CAL       = (reveive_data[2])
+    PIN_PMS_RESET     = (reveive_data[3])
+    PIN_PMS_SET       = (reveive_data[4])
+    PIN_NBIOT_PWRKEY  = (reveive_data[5])
+    PIN_NBIOT_SLEEP   = (reveive_data[6])
+    PIN_LED_CTRL      = (reveive_data[7])
+    PIN_FAN_CTRL      = (reveive_data[8])
+    #
 
 
 #===============SET COMMAND===============#
@@ -433,6 +549,12 @@ def SET_STATUS_LED(state):
     print(reveive_data)
     print("".join("%02x " % i for i in reveive_data).upper())
 
+    #
+    Leading   = (reveive_data[0])
+    Command   = (reveive_data[1])
+    RESULT    = (reveive_data[2])
+    #
+
 
 def SET_PIN_CO2_CAL(state):
 
@@ -447,6 +569,12 @@ def SET_PIN_CO2_CAL(state):
     reveive_data = GENERAL_RESPONSE(SET_PIN_CO2_CAL_cmd,SET_PIN_CO2_CAL_resp)
     print(reveive_data)
     print("".join("%02x " % i for i in reveive_data).upper())
+
+    #
+    Leading   = (reveive_data[0])
+    Command   = (reveive_data[1])
+    RESULT    = (reveive_data[2])
+    #
 
 
 def SET_PIN_PMS_RESET(state):
@@ -463,6 +591,12 @@ def SET_PIN_PMS_RESET(state):
     print(reveive_data)
     print("".join("%02x " % i for i in reveive_data).upper())
 
+    #
+    Leading   = (reveive_data[0])
+    Command   = (reveive_data[1])
+    RESULT    = (reveive_data[2])
+    #
+
 
 def SET_PIN_PMS_SET(state):
 
@@ -477,6 +611,12 @@ def SET_PIN_PMS_SET(state):
     reveive_data = GENERAL_RESPONSE(SET_PIN_PMS_SET_cmd,SET_PIN_PMS_SET_resp)
     print(reveive_data)
     print("".join("%02x " % i for i in reveive_data).upper())
+
+    #
+    Leading   = (reveive_data[0])
+    Command   = (reveive_data[1])
+    RESULT    = (reveive_data[2])
+    #
     
 
 def SET_PIN_NBIOT_PWRKEY(state):
@@ -492,6 +632,12 @@ def SET_PIN_NBIOT_PWRKEY(state):
     print(reveive_data)
     print("".join("%02x " % i for i in reveive_data).upper())
 
+    #
+    Leading   = (reveive_data[0])
+    Command   = (reveive_data[1])
+    RESULT    = (reveive_data[2])
+    #
+
 
 def SET_PIN_NBIOT_SLEEP(state):
 
@@ -505,6 +651,12 @@ def SET_PIN_NBIOT_SLEEP(state):
     reveive_data = GENERAL_RESPONSE(SET_PIN_NBIOT_SLEEP_cmd,SET_PIN_NBIOT_SLEEP_resp)
     print(reveive_data)
     print("".join("%02x " % i for i in reveive_data).upper())
+
+    #
+    Leading   = (reveive_data[0])
+    Command   = (reveive_data[1])
+    RESULT    = (reveive_data[2])
+    #
 
 
 def SET_PIN_LED_ALL(state):
@@ -521,6 +673,13 @@ def SET_PIN_LED_ALL(state):
     print(reveive_data)
     print("".join("%02x " % i for i in reveive_data).upper())
 
+    #
+    Leading   = (reveive_data[0])
+    Command   = (reveive_data[1])
+    RESULT    = (reveive_data[2])
+    #
+
+
 def SET_POLLING_SENSOR(POLL_TEMP,POLL_CO2,POLL_TVOC,POLL_LIGHT,POLL_PMS,POLL_RTC):
 
     print("AA 55 C6 39 00 00 00 00 00 00 su ~s")
@@ -533,6 +692,12 @@ def SET_POLLING_SENSOR(POLL_TEMP,POLL_CO2,POLL_TVOC,POLL_LIGHT,POLL_PMS,POLL_RTC
     reveive_data = GENERAL_RESPONSE(SET_POLLING_SENSOR_cmd,SET_POLLING_SENSOR_resp)
     print(reveive_data)
     print("".join("%02x " % i for i in reveive_data).upper())
+
+    #
+    Leading   = (reveive_data[0])
+    Command   = (reveive_data[1])
+    RESULT    = (reveive_data[2])
+    #
     
 
 def SET_RTC_DATE_TIME(YY,MM,DD,hh,mm,ss):
@@ -548,6 +713,12 @@ def SET_RTC_DATE_TIME(YY,MM,DD,hh,mm,ss):
     print(reveive_data)
     print("".join("%02x " % i for i in reveive_data).upper())
 
+    #
+    Leading   = (reveive_data[0])
+    Command   = (reveive_data[1])
+    RESULT    = (reveive_data[2])
+    #
+
 def SET_PIN_FAN_ALL(state):
 
     print("AA 55 C8 37 46 41 4E 63 01 su ~s")
@@ -560,6 +731,12 @@ def SET_PIN_FAN_ALL(state):
     reveive_data = GENERAL_RESPONSE(SET_PIN_FAN_ALL_cmd,SET_PIN_FAN_ALL_resp)
     print(reveive_data)
     print("".join("%02x " % i for i in reveive_data).upper())
+
+    #
+    Leading   = (reveive_data[0])
+    Command   = (reveive_data[1])
+    RESULT    = (reveive_data[2])
+    #
 
 
 #===============PROTOCOL COMMAND===============#
