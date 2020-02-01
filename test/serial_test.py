@@ -38,8 +38,8 @@ ser.write(bytes(get))
 recive = ser.read(8)
 print(recive.hex())
 
-temp = (recive[2]*256 + recive[3])/100
-hum  = (recive[4]*256 + recive[5])/100
+temp = (recive[3]*256 + recive[2])/100
+hum  = (recive[5]*256 + recive[4])/100
 
 print(temp)
 print(hum)
@@ -49,8 +49,8 @@ ser.write(bytes(get))
 recive = ser.read(8)
 print(recive.hex())
 
-temp = (recive[2]*256 + recive[3])/100
-hum  = (recive[4]*256 + recive[5])/100
+temp = (recive[3]*256 + recive[2])/100
+hum  = (recive[5]*256 + recive[4])/100
 
 print(temp)
 print(hum)
@@ -60,8 +60,8 @@ ser.write(bytes(get))
 recive = ser.read(8)
 print(recive.hex())
 
-temp = (recive[2]*256 + recive[3])/100
-hum  = (recive[4]*256 + recive[5])/100
+temp = (recive[3]*256 + recive[2])/100
+hum  = (recive[5]*256 + recive[4])/100
 
 print(temp)
 print(hum)
