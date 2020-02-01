@@ -427,6 +427,12 @@ def SET_STATUS_LED(state):
     data = LED_SET(SET_STATUS_LED_cmd,state)
     print("".join("%02x " % i for i in data).upper())
 
+    ser.write(bytes(data))
+
+    reveive_data = GENERAL_RESPONSE(SET_STATUS_LED_cmd,SET_STATUS_LED_resp)
+    print(reveive_data)
+    print("".join("%02x " % i for i in reveive_data).upper())
+
 
 def SET_PIN_CO2_CAL(state):
 
@@ -435,6 +441,12 @@ def SET_PIN_CO2_CAL(state):
     #print(GENERAL_SET(SET_PIN_CO2_CAL_cmd,SET_PIN_CO2_CAL_key,state))
     data = GENERAL_SET(SET_PIN_CO2_CAL_cmd,SET_PIN_CO2_CAL_key,state)
     print("".join("%02x " % i for i in data).upper())
+    
+    ser.write(bytes(data))
+
+    reveive_data = GENERAL_RESPONSE(SET_PIN_CO2_CAL_cmd,SET_PIN_CO2_CAL_resp)
+    print(reveive_data)
+    print("".join("%02x " % i for i in reveive_data).upper())
 
 
 def SET_PIN_PMS_RESET(state):
@@ -444,6 +456,12 @@ def SET_PIN_PMS_RESET(state):
     #print(GENERAL_SET(SET_PIN_PMS_RESET_cmd,SET_PIN_PMS_RESET_key,state))
     data = GENERAL_SET(SET_PIN_PMS_RESET_cmd,SET_PIN_PMS_RESET_key,state)
     print("".join("%02x " % i for i in data).upper())
+    
+    ser.write(bytes(data))
+
+    reveive_data = GENERAL_RESPONSE(SET_PIN_PMS_RESET_cmd,SET_PIN_PMS_RESET_resp)
+    print(reveive_data)
+    print("".join("%02x " % i for i in reveive_data).upper())
 
 
 def SET_PIN_PMS_SET(state):
@@ -454,6 +472,12 @@ def SET_PIN_PMS_SET(state):
     data = GENERAL_SET(SET_PIN_PMS_SET_cmd,SET_PIN_PMS_SET_key,state)
     print("".join("%02x " % i for i in data).upper())
     
+    ser.write(bytes(data))
+
+    reveive_data = GENERAL_RESPONSE(SET_PIN_PMS_SET_cmd,SET_PIN_PMS_SET_resp)
+    print(reveive_data)
+    print("".join("%02x " % i for i in reveive_data).upper())
+    
 
 def SET_PIN_NBIOT_PWRKEY(state):
 
@@ -461,6 +485,12 @@ def SET_PIN_NBIOT_PWRKEY(state):
     #print(GENERAL_SET(SET_PIN_NBIOT_PWRKEY_cmd,SET_PIN_NBIOT_PWRKEY_key,state))
     data = GENERAL_SET(SET_PIN_NBIOT_PWRKEY_cmd,SET_PIN_NBIOT_PWRKEY_key,state)
     print("".join("%02x " % i for i in data).upper())
+    
+    ser.write(bytes(data))
+
+    reveive_data = GENERAL_RESPONSE(SET_PIN_NBIOT_PWRKEY_cmd,SET_PIN_NBIOT_PWRKEY_resp)
+    print(reveive_data)
+    print("".join("%02x " % i for i in reveive_data).upper())
 
 
 def SET_PIN_NBIOT_SLEEP(state):
@@ -469,6 +499,12 @@ def SET_PIN_NBIOT_SLEEP(state):
     #print(GENERAL_SET(SET_PIN_NBIOT_SLEEP_cmd,SET_PIN_NBIOT_SLEEP_key,state))
     data = GENERAL_SET(SET_PIN_NBIOT_SLEEP_cmd,SET_PIN_NBIOT_SLEEP_key,state)
     print("".join("%02x " % i for i in data).upper())
+    
+    ser.write(bytes(data))
+
+    reveive_data = GENERAL_RESPONSE(SET_PIN_NBIOT_SLEEP_cmd,SET_PIN_NBIOT_SLEEP_resp)
+    print(reveive_data)
+    print("".join("%02x " % i for i in reveive_data).upper())
 
 
 def SET_PIN_LED_ALL(state):
@@ -478,6 +514,12 @@ def SET_PIN_LED_ALL(state):
     #print(GENERAL_SET(SET_PIN_LED_ALL_cmd,SET_PIN_LED_ALL_key,state))
     data = GENERAL_SET(SET_PIN_LED_ALL_cmd,SET_PIN_LED_ALL_key,state)
     print("".join("%02x " % i for i in data).upper())
+    
+    ser.write(bytes(data))
+
+    reveive_data = GENERAL_RESPONSE(SET_PIN_LED_ALL_cmd,SET_PIN_LED_ALL_resp)
+    print(reveive_data)
+    print("".join("%02x " % i for i in reveive_data).upper())
 
 def SET_POLLING_SENSOR(POLL_TEMP,POLL_CO2,POLL_TVOC,POLL_LIGHT,POLL_PMS,POLL_RTC):
 
@@ -486,6 +528,12 @@ def SET_POLLING_SENSOR(POLL_TEMP,POLL_CO2,POLL_TVOC,POLL_LIGHT,POLL_PMS,POLL_RTC
     data = POLLING_SET(POLL_TEMP,POLL_CO2,POLL_TVOC,POLL_LIGHT,POLL_PMS,POLL_RTC)
     print("".join("%02x " % i for i in data).upper())
     
+    ser.write(bytes(data))
+
+    reveive_data = GENERAL_RESPONSE(SET_POLLING_SENSOR_cmd,SET_POLLING_SENSOR_resp)
+    print(reveive_data)
+    print("".join("%02x " % i for i in reveive_data).upper())
+    
 
 def SET_RTC_DATE_TIME(YY,MM,DD,hh,mm,ss):
 
@@ -493,6 +541,12 @@ def SET_RTC_DATE_TIME(YY,MM,DD,hh,mm,ss):
     #print(RTC_SET(YY,MM,DD,hh,mm,ss))
     data = RTC_SET(YY,MM,DD,hh,mm,ss)
     print("".join("%02x " % i for i in data).upper())
+    
+    ser.write(bytes(data))
+
+    reveive_data = GENERAL_RESPONSE(SET_RTC_DATE_TIME_cmd,SET_RTC_DATE_TIME_resp)
+    print(reveive_data)
+    print("".join("%02x " % i for i in reveive_data).upper())
 
 def SET_PIN_FAN_ALL(state):
 
@@ -500,6 +554,12 @@ def SET_PIN_FAN_ALL(state):
     #print(GENERAL_SET(SET_PIN_FAN_ALL_cmd,SET_PIN_FAN_ALL_key,state))
     data = GENERAL_SET(SET_PIN_FAN_ALL_cmd,SET_PIN_FAN_ALL_key,state)
     print("".join("%02x " % i for i in data).upper())
+    
+    ser.write(bytes(data))
+
+    reveive_data = GENERAL_RESPONSE(SET_PIN_FAN_ALL_cmd,SET_PIN_FAN_ALL_resp)
+    print(reveive_data)
+    print("".join("%02x " % i for i in reveive_data).upper())
 
 
 #===============PROTOCOL COMMAND===============#
@@ -725,7 +785,7 @@ print("===============TEST SET===============\n")
 print("SET_STATUS_LED:")
 SET_STATUS_LED(0)
 SET_STATUS_LED(1)
-SET_STATUS_LED(2567)
+#SET_STATUS_LED(2567)
 print("\n")
 
 print("SET_PIN_CO2_CAL:")
