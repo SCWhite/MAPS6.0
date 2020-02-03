@@ -16,7 +16,7 @@ GET_INFO_SENSOR_POR_cmd = 0xB9 # V1.1 (Update)
 GET_RTC_DATE_TIME_cmd   = 0xBA
 GET_INFO_PIN_STATE_cmd  = 0xBB # V1.1 (New)
 
-SET_STATUS_LED_cmd       = 0xBF # V1.1 (New)
+SET_STATUS_LED_cmd       = 0xBC # V1.1 (New) /correct to 0xBC not 0xBF
 SET_PIN_CO2_CAL_cmd      = 0xC0
 SET_PIN_PMS_RESET_cmd    = 0xC1
 SET_PIN_PMS_SET_cmd      = 0xC2
@@ -272,7 +272,11 @@ def GET_TEMP_HUM():
     #
     TEMP = (reveive_data[3]*256 + reveive_data[2])/100
     HUM  = (reveive_data[5]*256 + reveive_data[4])/100
+    print("TEMP: "+ str(TEMP))
+    print("HUM: "+ str(HUM))
+    print("------------------------------")
     #
+    return TEMP,HUM
 
 
 def GET_CO2():
@@ -291,7 +295,11 @@ def GET_CO2():
     #
     CO2      = (reveive_data[3]*256 + reveive_data[2])
     AVE_CO2  = (reveive_data[5]*256 + reveive_data[4])
+    print("CO2: "+ str(CO2))
+    print("AVE_CO2: "+ str(AVE_CO2))
+    print("------------------------------")
     #
+    return CO2,AVE_CO2
 
 def GET_TVOC():
 
@@ -313,7 +321,16 @@ def GET_TVOC():
     S_ETHANOL      = (reveive_data[9]*256 + reveive_data[8])
     BASELINE_TVOC  = (reveive_data[11]*256 + reveive_data[10])
     BASELINE_eCO2  = (reveive_data[13]*256 + reveive_data[12])
+    print("TVOC: "+ str(TVOC))
+    print("eCO2: "+ str(eCO2))
+    print("S_H2: "+ str(S_H2))
+    print("S_ETHANOL: "+ str(S_ETHANOL))
+    print("BASELINE_TVOC: "+ str(BASELINE_TVOC))
+    print("BASELINE_eCO2: "+ str(BASELINE_eCO2))
+    print("------------------------------")
     #
+    #please consider other value(baseline)
+    return TVOC
 
 def GET_LIGHT():
 
@@ -335,7 +352,17 @@ def GET_LIGHT():
     CH_G                = (reveive_data[9]*256 + reveive_data[8])
     CH_B                = (reveive_data[11]*256 + reveive_data[10])
     CH_C                = (reveive_data[13]*256 + reveive_data[12])
+    print("Illuminance: "+ str(Illuminance))
+    print("ColorTemperature: "+ str(ColorTemperature))
+    print("CH_R: "+ str(CH_R))
+    print("CH_G: "+ str(CH_G))
+    print("CH_B: "+ str(CH_B))
+    print("CH_C: "+ str(CH_C))
+    print("------------------------------")
     #
+    #return a LIST
+    LIGHT = [Illuminance,ColorTemperature,CH_R,CH_G,CH_B,CH_C]
+    return LIGHT
 
 def GET_PMS():
 
@@ -357,7 +384,17 @@ def GET_PMS():
     PM1_SP   = (reveive_data[9]*256 + reveive_data[8])
     PM25_SP  = (reveive_data[11]*256 + reveive_data[10])
     PM10_SP  = (reveive_data[13]*256 + reveive_data[12])
+    print("PM1_AE: "+ str(PM1_AE))
+    print("PM25_AE: "+ str(PM25_AE))
+    print("PM10_AE: "+ str(PM10_AE))
+    print("PM1_SP: "+ str(PM1_SP))
+    print("PM25_SP: "+ str(PM25_SP))
+    print("PM10_SP: "+ str(PM10_SP))
+    print("------------------------------")
     #
+    #return a LIST
+    PMS = [PM1_AE,PM25_AE,PM10_AE,PM1_SP,PM25_SP,PM10_SP]
+    return PMS
     
 def GET_SENSOR_ALL():
 
@@ -397,6 +434,9 @@ def GET_SENSOR_ALL():
     PM10_SP             = (reveive_data[45]*256 + reveive_data[44])
     #
 
+    #passthis with LIST maybe?
+    #return 
+
 def GET_INFO_VERSION():
 
     print("AA 55 B6 49")
@@ -412,7 +452,10 @@ def GET_INFO_VERSION():
 
     #
     VERSION = (reveive_data[3]*256 + reveive_data[2])
+    print("VERSION: "+ str(VERSION))
+    print("------------------------------")
     #
+    return VERSION
 
 def GET_INFO_RUNTIME():
 
@@ -432,7 +475,15 @@ def GET_INFO_RUNTIME():
     RT_HOUR  = (reveive_data[4])
     RT_MIN   = (reveive_data[5])
     RT_SEC   = (reveive_data[6])
+    print("RT_DAY: "+ str(RT_DAY))
+    print("RT_HOUR: "+ str(RT_HOUR))
+    print("RT_MIN: "+ str(RT_MIN))
+    print("RT_SEC: "+ str(RT_SEC))
+    print("------------------------------")
     #
+    #return a LIST
+    RUNTIME = [RT_DAY,RT_HOUR,RT_MIN,RT_SEC]
+    return RUNTIME
 
 def GET_INFO_ERROR_LOG():
 
@@ -454,7 +505,16 @@ def GET_INFO_ERROR_LOG():
     ERROR_LIGHT     = (reveive_data[9]*256 + reveive_data[8])
     ERROR_PMS       = (reveive_data[11]*256 + reveive_data[10])
     ERROR_RTC       = (reveive_data[13]*256 + reveive_data[12])
+    print("ERROR_TEMP_HUM: "+ str(ERROR_TEMP_HUM))
+    print("ERROR_CO2: "+ str(ERROR_CO2))
+    print("ERROR_TVOC: "+ str(ERROR_TVOC))
+    print("ERROR_LIGHT: "+ str(ERROR_LIGHT))
+    print("ERROR_PMS: "+ str(ERROR_PMS))
+    print("ERROR_RTC: "+ str(ERROR_RTC))
+    print("------------------------------")
     #
+    ERROR_LOG = [ERROR_TEMP_HUM,ERROR_CO2,ERROR_TVOC,ERROR_LIGHT,ERROR_PMS,ERROR_RTC]
+    return ERROR_LOG
     
 def GET_INFO_SENSOR_POR():
 
@@ -483,6 +543,8 @@ def GET_INFO_SENSOR_POR():
     POLL_PMS      = (reveive_data[12])
     POLL_RTC      = (reveive_data[13])
     #
+    SENSOR_POR = [POR_TEMP_HUM,POR_CO2,POR_TVOC,POR_LIGHT,POR_PMS,POR_RTC,POLL_TEMP_HUM,POLL_CO2,POLL_TVOC,POLL_LIGHT,POLL_PMS,POLL_RTC]
+    return SENSOR_POR
 
 def GET_RTC_DATE_TIME():
 
@@ -505,6 +567,8 @@ def GET_RTC_DATE_TIME():
     RTC_mm  = (reveive_data[6])
     RTC_ss  = (reveive_data[7])
     #
+    DATE_TIME = [RTC_YY,RTC_MM,RTC_DD,RTC_hh,RTC_mm,RTC_ss]
+    return DATE_TIME
 
 def GET_INFO_PIN_STATE():
 
@@ -528,6 +592,8 @@ def GET_INFO_PIN_STATE():
     PIN_LED_CTRL      = (reveive_data[7])
     PIN_FAN_CTRL      = (reveive_data[8])
     #
+    PIN_STATE = [PIN_CO2_CAL,PIN_PMS_RESET,PIN_PMS_SET,PIN_NBIOT_PWRKEY,PIN_NBIOT_SLEEP,PIN_LED_CTRL,PIN_FAN_CTRL]
+    return PIN_STATE
 
 
 #===============SET COMMAND===============#
@@ -554,6 +620,7 @@ def SET_STATUS_LED(state):
     Command   = (reveive_data[1])
     RESULT    = (reveive_data[2])
     #
+    return RESULT
 
 
 def SET_PIN_CO2_CAL(state):
@@ -575,6 +642,7 @@ def SET_PIN_CO2_CAL(state):
     Command   = (reveive_data[1])
     RESULT    = (reveive_data[2])
     #
+    return RESULT
 
 
 def SET_PIN_PMS_RESET(state):
@@ -596,6 +664,7 @@ def SET_PIN_PMS_RESET(state):
     Command   = (reveive_data[1])
     RESULT    = (reveive_data[2])
     #
+    return RESULT
 
 
 def SET_PIN_PMS_SET(state):
@@ -617,6 +686,7 @@ def SET_PIN_PMS_SET(state):
     Command   = (reveive_data[1])
     RESULT    = (reveive_data[2])
     #
+    return RESULT
     
 
 def SET_PIN_NBIOT_PWRKEY(state):
@@ -637,6 +707,7 @@ def SET_PIN_NBIOT_PWRKEY(state):
     Command   = (reveive_data[1])
     RESULT    = (reveive_data[2])
     #
+    return RESULT
 
 
 def SET_PIN_NBIOT_SLEEP(state):
@@ -657,6 +728,7 @@ def SET_PIN_NBIOT_SLEEP(state):
     Command   = (reveive_data[1])
     RESULT    = (reveive_data[2])
     #
+    return RESULT
 
 
 def SET_PIN_LED_ALL(state):
@@ -678,6 +750,7 @@ def SET_PIN_LED_ALL(state):
     Command   = (reveive_data[1])
     RESULT    = (reveive_data[2])
     #
+    return RESULT
 
 
 def SET_POLLING_SENSOR(POLL_TEMP,POLL_CO2,POLL_TVOC,POLL_LIGHT,POLL_PMS,POLL_RTC):
@@ -698,6 +771,7 @@ def SET_POLLING_SENSOR(POLL_TEMP,POLL_CO2,POLL_TVOC,POLL_LIGHT,POLL_PMS,POLL_RTC
     Command   = (reveive_data[1])
     RESULT    = (reveive_data[2])
     #
+    return RESULT
     
 
 def SET_RTC_DATE_TIME(YY,MM,DD,hh,mm,ss):
@@ -718,6 +792,7 @@ def SET_RTC_DATE_TIME(YY,MM,DD,hh,mm,ss):
     Command   = (reveive_data[1])
     RESULT    = (reveive_data[2])
     #
+    return RESULT
 
 def SET_PIN_FAN_ALL(state):
 
@@ -737,6 +812,7 @@ def SET_PIN_FAN_ALL(state):
     Command   = (reveive_data[1])
     RESULT    = (reveive_data[2])
     #
+    return RESULT
 
 
 #===============PROTOCOL COMMAND===============#
