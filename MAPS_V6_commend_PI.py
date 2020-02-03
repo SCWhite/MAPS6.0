@@ -1,6 +1,10 @@
 import serial
 import time
 
+#debug switch-- 1:on / 0:off
+debug = 0
+#if debug:
+
 #command code
 leading_cmd             = 0xAA
 GET_TEMP_HUM_cmd        = 0xB0
@@ -258,61 +262,72 @@ def LED_SET(cmd,state):
 def GET_TEMP_HUM():
 
     #ser.write()
-    print("AA 55 B0 4F")
+    if debug:
+        print("AA 55 B0 4F")
     #print(GENERAL_GET(GET_TEMP_HUM_cmd))
     data = GENERAL_GET(GET_TEMP_HUM_cmd)
-    print("".join("%02x " % i for i in data).upper())
+    if debug:
+        print("".join("%02x " % i for i in data).upper())
     
     ser.write(bytes(data))
 
     reveive_data = GENERAL_RESPONSE(GET_TEMP_HUM_cmd,GET_TEMP_HUM_resp)
-    print(reveive_data)
-    print("".join("%02x " % i for i in reveive_data).upper())
+    if debug:
+        print(reveive_data)
+        print("".join("%02x " % i for i in reveive_data).upper())
 
     #
     TEMP = (reveive_data[3]*256 + reveive_data[2])/100
     HUM  = (reveive_data[5]*256 + reveive_data[4])/100
-    print("TEMP: "+ str(TEMP))
-    print("HUM: "+ str(HUM))
-    print("------------------------------")
+    if debug:
+        print("TEMP: "+ str(TEMP))
+        print("HUM: "+ str(HUM))
+        print("------------------------------")
     #
     return TEMP,HUM
 
 
 def GET_CO2():
 
-    print("AA 55 B1 4E")
+    if debug:
+        print("AA 55 B1 4E")
     #print(GENERAL_GET(GET_CO2_cmd))
     data = GENERAL_GET(GET_CO2_cmd)
-    print("".join("%02x " % i for i in data).upper())
+    if debug:
+        print("".join("%02x " % i for i in data).upper())
     
     ser.write(bytes(data))
 
     reveive_data = GENERAL_RESPONSE(GET_CO2_cmd,GET_CO2_resp)
-    print(reveive_data)
-    print("".join("%02x " % i for i in reveive_data).upper())
+    if debug:
+        print(reveive_data)
+        print("".join("%02x " % i for i in reveive_data).upper())
 
     #
     CO2      = (reveive_data[3]*256 + reveive_data[2])
     AVE_CO2  = (reveive_data[5]*256 + reveive_data[4])
-    print("CO2: "+ str(CO2))
-    print("AVE_CO2: "+ str(AVE_CO2))
-    print("------------------------------")
+    if debug:
+        print("CO2: "+ str(CO2))
+        print("AVE_CO2: "+ str(AVE_CO2))
+        print("------------------------------")
     #
     return CO2,AVE_CO2
 
 def GET_TVOC():
 
-    print("AA 55 B2 4D")
+    if debug:
+        print("AA 55 B2 4D")
     #print(GENERAL_GET(GET_TVOC_cmd))
     data = GENERAL_GET(GET_TVOC_cmd)
-    print("".join("%02x " % i for i in data).upper())
+    if debug:
+        print("".join("%02x " % i for i in data).upper())
     
     ser.write(bytes(data))
 
     reveive_data = GENERAL_RESPONSE(GET_TVOC_cmd,GET_TVOC_resp)
-    print(reveive_data)
-    print("".join("%02x " % i for i in reveive_data).upper())
+    if debug:
+        print(reveive_data)
+        print("".join("%02x " % i for i in reveive_data).upper())
 
     #
     TVOC           = (reveive_data[3]*256 + reveive_data[2])
@@ -321,29 +336,35 @@ def GET_TVOC():
     S_ETHANOL      = (reveive_data[9]*256 + reveive_data[8])
     BASELINE_TVOC  = (reveive_data[11]*256 + reveive_data[10])
     BASELINE_eCO2  = (reveive_data[13]*256 + reveive_data[12])
-    print("TVOC: "+ str(TVOC))
-    print("eCO2: "+ str(eCO2))
-    print("S_H2: "+ str(S_H2))
-    print("S_ETHANOL: "+ str(S_ETHANOL))
-    print("BASELINE_TVOC: "+ str(BASELINE_TVOC))
-    print("BASELINE_eCO2: "+ str(BASELINE_eCO2))
-    print("------------------------------")
+    if debug:
+        print("TVOC: "+ str(TVOC))
+        print("eCO2: "+ str(eCO2))
+        print("S_H2: "+ str(S_H2))
+        print("S_ETHANOL: "+ str(S_ETHANOL))
+        print("BASELINE_TVOC: "+ str(BASELINE_TVOC))
+        print("BASELINE_eCO2: "+ str(BASELINE_eCO2))
+        print("------------------------------")
     #
     #please consider other value(baseline)
-    return TVOC
+    TVOC_ALL = [TVOC,eCO2,S_H2,S_ETHANOL,BASELINE_TVOC,BASELINE_eCO2]
+    
+    return TVOC_ALL
 
 def GET_LIGHT():
 
-    print("AA 55 B3 4C")
+    if debug:
+        print("AA 55 B3 4C")
     #print(GENERAL_GET(GET_LIGHT_cmd))
     data = GENERAL_GET(GET_LIGHT_cmd)
-    print("".join("%02x " % i for i in data).upper())
+    if debug:
+        print("".join("%02x " % i for i in data).upper())
     
     ser.write(bytes(data))
 
     reveive_data = GENERAL_RESPONSE(GET_LIGHT_cmd,GET_LIGHT_resp)
-    print(reveive_data)
-    print("".join("%02x " % i for i in reveive_data).upper())
+    if debug:
+        print(reveive_data)
+        print("".join("%02x " % i for i in reveive_data).upper())
 
     #
     Illuminance         = (reveive_data[3]*256 + reveive_data[2])
@@ -352,13 +373,14 @@ def GET_LIGHT():
     CH_G                = (reveive_data[9]*256 + reveive_data[8])
     CH_B                = (reveive_data[11]*256 + reveive_data[10])
     CH_C                = (reveive_data[13]*256 + reveive_data[12])
-    print("Illuminance: "+ str(Illuminance))
-    print("ColorTemperature: "+ str(ColorTemperature))
-    print("CH_R: "+ str(CH_R))
-    print("CH_G: "+ str(CH_G))
-    print("CH_B: "+ str(CH_B))
-    print("CH_C: "+ str(CH_C))
-    print("------------------------------")
+    if debug:
+        print("Illuminance: "+ str(Illuminance))
+        print("ColorTemperature: "+ str(ColorTemperature))
+        print("CH_R: "+ str(CH_R))
+        print("CH_G: "+ str(CH_G))
+        print("CH_B: "+ str(CH_B))
+        print("CH_C: "+ str(CH_C))
+        print("------------------------------")
     #
     #return a LIST
     LIGHT = [Illuminance,ColorTemperature,CH_R,CH_G,CH_B,CH_C]
@@ -366,16 +388,19 @@ def GET_LIGHT():
 
 def GET_PMS():
 
-    print("AA 55 B4 4B")
+    if debug:
+        print("AA 55 B4 4B")
     #print(GENERAL_GET(GET_PMS_cmd))
     data = GENERAL_GET(GET_PMS_cmd)
-    print("".join("%02x " % i for i in data).upper())
+    if debug:
+        print("".join("%02x " % i for i in data).upper())
     
     ser.write(bytes(data))
 
     reveive_data = GENERAL_RESPONSE(GET_PMS_cmd,GET_PMS_resp)
-    print(reveive_data)
-    print("".join("%02x " % i for i in reveive_data).upper())
+    if debug:
+        print(reveive_data)
+        print("".join("%02x " % i for i in reveive_data).upper())
 
     #
     PM1_AE   = (reveive_data[3]*256 + reveive_data[2])
@@ -384,13 +409,14 @@ def GET_PMS():
     PM1_SP   = (reveive_data[9]*256 + reveive_data[8])
     PM25_SP  = (reveive_data[11]*256 + reveive_data[10])
     PM10_SP  = (reveive_data[13]*256 + reveive_data[12])
-    print("PM1_AE: "+ str(PM1_AE))
-    print("PM25_AE: "+ str(PM25_AE))
-    print("PM10_AE: "+ str(PM10_AE))
-    print("PM1_SP: "+ str(PM1_SP))
-    print("PM25_SP: "+ str(PM25_SP))
-    print("PM10_SP: "+ str(PM10_SP))
-    print("------------------------------")
+    if debug:
+        print("PM1_AE: "+ str(PM1_AE))
+        print("PM25_AE: "+ str(PM25_AE))
+        print("PM10_AE: "+ str(PM10_AE))
+        print("PM1_SP: "+ str(PM1_SP))
+        print("PM25_SP: "+ str(PM25_SP))
+        print("PM10_SP: "+ str(PM10_SP))
+        print("------------------------------")
     #
     #return a LIST
     PMS = [PM1_AE,PM25_AE,PM10_AE,PM1_SP,PM25_SP,PM10_SP]
@@ -398,16 +424,19 @@ def GET_PMS():
     
 def GET_SENSOR_ALL():
 
-    print("AA 55 B5 4A")
+    if debug:
+        print("AA 55 B5 4A")
     #print(GENERAL_GET(GET_SENSOR_ALL_cmd))
     data = GENERAL_GET(GET_SENSOR_ALL_cmd)
-    print("".join("%02x " % i for i in data).upper())
+    if debug:
+        print("".join("%02x " % i for i in data).upper())
     
     ser.write(bytes(data))
 
     reveive_data = GENERAL_RESPONSE(GET_SENSOR_ALL_cmd,GET_SENSOR_ALL_resp)
-    print(reveive_data)
-    print("".join("%02x " % i for i in reveive_data).upper())
+    if debug:
+        print(reveive_data)
+        print("".join("%02x " % i for i in reveive_data).upper())
 
     #
     TEMP                = (reveive_data[3]*256 + reveive_data[2])/100
@@ -435,51 +464,62 @@ def GET_SENSOR_ALL():
     #
 
     #passthis with LIST maybe?
-    #return 
+    SENSOR_ALL = [TEMP,HUM,CO2,AVE_CO2,TVOC,eCO2,S_H2,S_ETHANOL,BASELINE_TVOC,BASELINE_eCO2,Illuminance,ColorTemperature,CH_R,CH_G,CH_B,CH_C,PM1_AE,PM25_AE,PM10_AE,PM1_SP,PM25_SP,PM10_SP]
+    #SENSOR_ALL = [TEMP,HUM,CO2,AVE_CO2,TVOC,Illuminance,CH_R,CH_G,CH_B,CH_C,PM1_AE,PM25_AE,PM10_AE]
+    
+    return SENSOR_ALL
 
 def GET_INFO_VERSION():
 
-    print("AA 55 B6 49")
+    if debug:
+        print("AA 55 B6 49")
     #print(GENERAL_GET(GET_INFO_VERSION_cmd))
     data = GENERAL_GET(GET_INFO_VERSION_cmd)
-    print("".join("%02x " % i for i in data).upper())
+    if debug:
+        print("".join("%02x " % i for i in data).upper())
     
     ser.write(bytes(data))
 
     reveive_data = GENERAL_RESPONSE(GET_INFO_VERSION_cmd,GET_INFO_VERSION_resp)
-    print(reveive_data)
-    print("".join("%02x " % i for i in reveive_data).upper())
+    if debug:
+        print(reveive_data)
+        print("".join("%02x " % i for i in reveive_data).upper())
 
     #
     VERSION = (reveive_data[3]*256 + reveive_data[2])
-    print("VERSION: "+ str(VERSION))
-    print("------------------------------")
+    if debug:
+        print("VERSION: "+ str(VERSION))
+        print("------------------------------")
     #
     return VERSION
 
 def GET_INFO_RUNTIME():
 
-    print("AA 55 B7 48")
+    if debug:
+        print("AA 55 B7 48")
     #print(GENERAL_GET(GET_INFO_RUNTIME_cmd))
     data = GENERAL_GET(GET_INFO_RUNTIME_cmd)
-    print("".join("%02x " % i for i in data).upper())
+    if debug:
+        print("".join("%02x " % i for i in data).upper())
     
     ser.write(bytes(data))
 
     reveive_data = GENERAL_RESPONSE(GET_INFO_RUNTIME_cmd,GET_INFO_RUNTIME_resp)
-    print(reveive_data)
-    print("".join("%02x " % i for i in reveive_data).upper())
+    if debug:
+        print(reveive_data)
+        print("".join("%02x " % i for i in reveive_data).upper())
 
     #
     RT_DAY   = (reveive_data[3]*256 + reveive_data[2])
     RT_HOUR  = (reveive_data[4])
     RT_MIN   = (reveive_data[5])
     RT_SEC   = (reveive_data[6])
-    print("RT_DAY: "+ str(RT_DAY))
-    print("RT_HOUR: "+ str(RT_HOUR))
-    print("RT_MIN: "+ str(RT_MIN))
-    print("RT_SEC: "+ str(RT_SEC))
-    print("------------------------------")
+    if debug:
+        print("RT_DAY: "+ str(RT_DAY))
+        print("RT_HOUR: "+ str(RT_HOUR))
+        print("RT_MIN: "+ str(RT_MIN))
+        print("RT_SEC: "+ str(RT_SEC))
+        print("------------------------------")
     #
     #return a LIST
     RUNTIME = [RT_DAY,RT_HOUR,RT_MIN,RT_SEC]
@@ -487,16 +527,19 @@ def GET_INFO_RUNTIME():
 
 def GET_INFO_ERROR_LOG():
 
-    print("AA 55 B8 47")
+    if debug:
+        print("AA 55 B8 47")
     #print(GENERAL_GET(GET_INFO_ERROR_LOG_cmd))
     data = GENERAL_GET(GET_INFO_ERROR_LOG_cmd)
-    print("".join("%02x " % i for i in data).upper())
+    if debug:
+        print("".join("%02x " % i for i in data).upper())
     
     ser.write(bytes(data))
 
     reveive_data = GENERAL_RESPONSE(GET_INFO_ERROR_LOG_cmd,GET_INFO_ERROR_LOG_resp)
-    print(reveive_data)
-    print("".join("%02x " % i for i in reveive_data).upper())
+    if debug:
+        print(reveive_data)
+        print("".join("%02x " % i for i in reveive_data).upper())
 
     #
     ERROR_TEMP_HUM  = (reveive_data[3]*256 + reveive_data[2])
@@ -505,29 +548,33 @@ def GET_INFO_ERROR_LOG():
     ERROR_LIGHT     = (reveive_data[9]*256 + reveive_data[8])
     ERROR_PMS       = (reveive_data[11]*256 + reveive_data[10])
     ERROR_RTC       = (reveive_data[13]*256 + reveive_data[12])
-    print("ERROR_TEMP_HUM: "+ str(ERROR_TEMP_HUM))
-    print("ERROR_CO2: "+ str(ERROR_CO2))
-    print("ERROR_TVOC: "+ str(ERROR_TVOC))
-    print("ERROR_LIGHT: "+ str(ERROR_LIGHT))
-    print("ERROR_PMS: "+ str(ERROR_PMS))
-    print("ERROR_RTC: "+ str(ERROR_RTC))
-    print("------------------------------")
+    if debug:
+        print("ERROR_TEMP_HUM: "+ str(ERROR_TEMP_HUM))
+        print("ERROR_CO2: "+ str(ERROR_CO2))
+        print("ERROR_TVOC: "+ str(ERROR_TVOC))
+        print("ERROR_LIGHT: "+ str(ERROR_LIGHT))
+        print("ERROR_PMS: "+ str(ERROR_PMS))
+        print("ERROR_RTC: "+ str(ERROR_RTC))
+        print("------------------------------")
     #
     ERROR_LOG = [ERROR_TEMP_HUM,ERROR_CO2,ERROR_TVOC,ERROR_LIGHT,ERROR_PMS,ERROR_RTC]
     return ERROR_LOG
     
 def GET_INFO_SENSOR_POR():
 
-    print("AA 55 B9 46")
+    if debug:
+        print("AA 55 B9 46")
     #print(GENERAL_GET(GET_INFO_SENSOR_POR_cmd))
     data = GENERAL_GET(GET_INFO_SENSOR_POR_cmd)
-    print("".join("%02x " % i for i in data).upper())
+    if debug:
+        print("".join("%02x " % i for i in data).upper())
     
     ser.write(bytes(data))
 
     reveive_data = GENERAL_RESPONSE(GET_INFO_SENSOR_POR_cmd,GET_INFO_SENSOR_POR_resp)
-    print(reveive_data)
-    print("".join("%02x " % i for i in reveive_data).upper())
+    if debug:
+        print(reveive_data)
+        print("".join("%02x " % i for i in reveive_data).upper())
 
     #
     POR_TEMP_HUM  = (reveive_data[2])
@@ -548,16 +595,19 @@ def GET_INFO_SENSOR_POR():
 
 def GET_RTC_DATE_TIME():
 
-    print("AA 55 BA 45")
+    if debug:
+        print("AA 55 BA 45")
     #print(GENERAL_GET(GET_RTC_DATE_TIME_cmd))
     data = GENERAL_GET(GET_RTC_DATE_TIME_cmd)
-    print("".join("%02x " % i for i in data).upper())
+    if debug:
+        print("".join("%02x " % i for i in data).upper())
     
     ser.write(bytes(data))
 
     reveive_data = GENERAL_RESPONSE(GET_RTC_DATE_TIME_cmd,GET_RTC_DATE_TIME_resp)
-    print(reveive_data)
-    print("".join("%02x " % i for i in reveive_data).upper())
+    if debug:
+        print(reveive_data)
+        print("".join("%02x " % i for i in reveive_data).upper())
 
     #
     RTC_YY  = (reveive_data[2])
@@ -572,16 +622,19 @@ def GET_RTC_DATE_TIME():
 
 def GET_INFO_PIN_STATE():
 
-    print("AA 55 BB 44")
+    if debug:
+        print("AA 55 BB 44")
     #print(GENERAL_GET(GET_INFO_PIN_STATE_cmd))
     data = GENERAL_GET(GET_INFO_PIN_STATE_cmd)
-    print("".join("%02x " % i for i in data).upper())
+    if debug:
+        print("".join("%02x " % i for i in data).upper())
     
     ser.write(bytes(data))
 
     reveive_data = GENERAL_RESPONSE(GET_INFO_PIN_STATE_cmd,GET_INFO_PIN_STATE_resp)
-    print(reveive_data)
-    print("".join("%02x " % i for i in reveive_data).upper())
+    if debug:
+        print(reveive_data)
+        print("".join("%02x " % i for i in reveive_data).upper())
 
     #
     PIN_CO2_CAL       = (reveive_data[2])
@@ -603,17 +656,20 @@ def GET_INFO_PIN_STATE():
 
 def SET_STATUS_LED(state):
 
-    #STATUS_LED state 0: LED off / 1: LED on / 2~65534:Pulse time length (ms)
-    print("AA 55 BF 40 00 00 su ~s")
+    if debug:
+        #STATUS_LED state 0: LED off / 1: LED on / 2~65534:Pulse time length (ms)
+        print("AA 55 BF 40 00 00 su ~s")
     #print(LED_SET(SET_STATUS_LED_cmd,state)) #there is no key for SET_STATUS_LED 
     data = LED_SET(SET_STATUS_LED_cmd,state)
-    print("".join("%02x " % i for i in data).upper())
+    if debug:
+        print("".join("%02x " % i for i in data).upper())
 
     ser.write(bytes(data))
 
     reveive_data = GENERAL_RESPONSE(SET_STATUS_LED_cmd,SET_STATUS_LED_resp)
-    print(reveive_data)
-    print("".join("%02x " % i for i in reveive_data).upper())
+    if debug:
+        print(reveive_data)
+        print("".join("%02x " % i for i in reveive_data).upper())
 
     #
     Leading   = (reveive_data[0])
@@ -625,17 +681,20 @@ def SET_STATUS_LED(state):
 
 def SET_PIN_CO2_CAL(state):
 
-    #CO2_CAL state default:1 / set to 0 to calibrate CO2
-    print("AA 55 C0 3F 53 38 4C 50 01 su ~s")
+    if debug:
+        #CO2_CAL state default:1 / set to 0 to calibrate CO2
+        print("AA 55 C0 3F 53 38 4C 50 01 su ~s")
     #print(GENERAL_SET(SET_PIN_CO2_CAL_cmd,SET_PIN_CO2_CAL_key,state))
     data = GENERAL_SET(SET_PIN_CO2_CAL_cmd,SET_PIN_CO2_CAL_key,state)
-    print("".join("%02x " % i for i in data).upper())
+    if debug:
+        print("".join("%02x " % i for i in data).upper())
     
     ser.write(bytes(data))
 
     reveive_data = GENERAL_RESPONSE(SET_PIN_CO2_CAL_cmd,SET_PIN_CO2_CAL_resp)
-    print(reveive_data)
-    print("".join("%02x " % i for i in reveive_data).upper())
+    if debug:
+        print(reveive_data)
+        print("".join("%02x " % i for i in reveive_data).upper())
 
     #
     Leading   = (reveive_data[0])
@@ -647,17 +706,20 @@ def SET_PIN_CO2_CAL(state):
 
 def SET_PIN_PMS_RESET(state):
 
-    #PMS_RESET state default:1 / set to 0 to reset PM_sensor
-    print("AA 55 C1 3E 50 4D 53 33 01 su ~s")
+    if debug:
+        #PMS_RESET state default:1 / set to 0 to reset PM_sensor
+        print("AA 55 C1 3E 50 4D 53 33 01 su ~s")
     #print(GENERAL_SET(SET_PIN_PMS_RESET_cmd,SET_PIN_PMS_RESET_key,state))
     data = GENERAL_SET(SET_PIN_PMS_RESET_cmd,SET_PIN_PMS_RESET_key,state)
-    print("".join("%02x " % i for i in data).upper())
+    if debug:
+        print("".join("%02x " % i for i in data).upper())
     
     ser.write(bytes(data))
 
     reveive_data = GENERAL_RESPONSE(SET_PIN_PMS_RESET_cmd,SET_PIN_PMS_RESET_resp)
-    print(reveive_data)
-    print("".join("%02x " % i for i in reveive_data).upper())
+    if debug:
+        print(reveive_data)
+        print("".join("%02x " % i for i in reveive_data).upper())
 
     #
     Leading   = (reveive_data[0])
@@ -669,18 +731,20 @@ def SET_PIN_PMS_RESET(state):
 
 def SET_PIN_PMS_SET(state):
 
-    #PMS_SET state default:1 / set to 0 to disable PM_sensor
-    print("AA 55 C2 3D 33 30 30 33 01 su ~s")
+    if debug:
+        #PMS_SET state default:1 / set to 0 to disable PM_sensor
+        print("AA 55 C2 3D 33 30 30 33 01 su ~s")
     #print(GENERAL_SET(SET_PIN_PMS_SET_cmd,SET_PIN_PMS_SET_key,state))
     data = GENERAL_SET(SET_PIN_PMS_SET_cmd,SET_PIN_PMS_SET_key,state)
-    print("".join("%02x " % i for i in data).upper())
+    if debug:
+        print("".join("%02x " % i for i in data).upper())
     
     ser.write(bytes(data))
 
     reveive_data = GENERAL_RESPONSE(SET_PIN_PMS_SET_cmd,SET_PIN_PMS_SET_resp)
-    print(reveive_data)
-    print("".join("%02x " % i for i in reveive_data).upper())
-
+    if debug:
+        print(reveive_data)
+        print("".join("%02x " % i for i in reveive_data).upper())
     #
     Leading   = (reveive_data[0])
     Command   = (reveive_data[1])
@@ -691,16 +755,19 @@ def SET_PIN_PMS_SET(state):
 
 def SET_PIN_NBIOT_PWRKEY(state):
 
-    print("AA 55 C3 3C 4E 42 4C 2D 49 su ~s")
+    if debug:
+        print("AA 55 C3 3C 4E 42 4C 2D 49 su ~s")
     #print(GENERAL_SET(SET_PIN_NBIOT_PWRKEY_cmd,SET_PIN_NBIOT_PWRKEY_key,state))
     data = GENERAL_SET(SET_PIN_NBIOT_PWRKEY_cmd,SET_PIN_NBIOT_PWRKEY_key,state)
-    print("".join("%02x " % i for i in data).upper())
+    if debug:
+        print("".join("%02x " % i for i in data).upper())
     
     ser.write(bytes(data))
 
     reveive_data = GENERAL_RESPONSE(SET_PIN_NBIOT_PWRKEY_cmd,SET_PIN_NBIOT_PWRKEY_resp)
-    print(reveive_data)
-    print("".join("%02x " % i for i in reveive_data).upper())
+    if debug:
+        print(reveive_data)
+        print("".join("%02x " % i for i in reveive_data).upper())
 
     #
     Leading   = (reveive_data[0])
@@ -712,16 +779,19 @@ def SET_PIN_NBIOT_PWRKEY(state):
 
 def SET_PIN_NBIOT_SLEEP(state):
 
-    print("AA 55 C4 3B 2D 49 4F 54 01 su ~s")
+    if debug:
+        print("AA 55 C4 3B 2D 49 4F 54 01 su ~s")
     #print(GENERAL_SET(SET_PIN_NBIOT_SLEEP_cmd,SET_PIN_NBIOT_SLEEP_key,state))
     data = GENERAL_SET(SET_PIN_NBIOT_SLEEP_cmd,SET_PIN_NBIOT_SLEEP_key,state)
-    print("".join("%02x " % i for i in data).upper())
+    if debug:
+        print("".join("%02x " % i for i in data).upper())
     
     ser.write(bytes(data))
 
     reveive_data = GENERAL_RESPONSE(SET_PIN_NBIOT_SLEEP_cmd,SET_PIN_NBIOT_SLEEP_resp)
-    print(reveive_data)
-    print("".join("%02x " % i for i in reveive_data).upper())
+    if debug:
+        print(reveive_data)
+        print("".join("%02x " % i for i in reveive_data).upper())
 
     #
     Leading   = (reveive_data[0])
@@ -733,17 +803,20 @@ def SET_PIN_NBIOT_SLEEP(state):
 
 def SET_PIN_LED_ALL(state):
 
-    #PIN_LED state default:1 / set to 0 to turnoff all LED
-    print("AA 55 C5 3A 53 4C 45 44 01 su ~s")
+    if debug:
+        #PIN_LED state default:1 / set to 0 to turnoff all LED
+        print("AA 55 C5 3A 53 4C 45 44 01 su ~s")
     #print(GENERAL_SET(SET_PIN_LED_ALL_cmd,SET_PIN_LED_ALL_key,state))
     data = GENERAL_SET(SET_PIN_LED_ALL_cmd,SET_PIN_LED_ALL_key,state)
-    print("".join("%02x " % i for i in data).upper())
+    if debug:
+        print("".join("%02x " % i for i in data).upper())
     
     ser.write(bytes(data))
 
     reveive_data = GENERAL_RESPONSE(SET_PIN_LED_ALL_cmd,SET_PIN_LED_ALL_resp)
-    print(reveive_data)
-    print("".join("%02x " % i for i in reveive_data).upper())
+    if debug:
+        print(reveive_data)
+        print("".join("%02x " % i for i in reveive_data).upper())
 
     #
     Leading   = (reveive_data[0])
@@ -755,16 +828,19 @@ def SET_PIN_LED_ALL(state):
 
 def SET_POLLING_SENSOR(POLL_TEMP,POLL_CO2,POLL_TVOC,POLL_LIGHT,POLL_PMS,POLL_RTC):
 
-    print("AA 55 C6 39 00 00 00 00 00 00 su ~s")
+    if debug:
+        print("AA 55 C6 39 00 00 00 00 00 00 su ~s")
     #print(POLLING_SET(POLL_TEMP,POLL_CO2,POLL_TVOC,POLL_LIGHT,POLL_PMS,POLL_RTC))
     data = POLLING_SET(POLL_TEMP,POLL_CO2,POLL_TVOC,POLL_LIGHT,POLL_PMS,POLL_RTC)
-    print("".join("%02x " % i for i in data).upper())
+    if debug:
+        print("".join("%02x " % i for i in data).upper())
     
     ser.write(bytes(data))
 
     reveive_data = GENERAL_RESPONSE(SET_POLLING_SENSOR_cmd,SET_POLLING_SENSOR_resp)
-    print(reveive_data)
-    print("".join("%02x " % i for i in reveive_data).upper())
+    if debug:
+        print(reveive_data)
+        print("".join("%02x " % i for i in reveive_data).upper())
 
     #
     Leading   = (reveive_data[0])
@@ -776,16 +852,19 @@ def SET_POLLING_SENSOR(POLL_TEMP,POLL_CO2,POLL_TVOC,POLL_LIGHT,POLL_PMS,POLL_RTC
 
 def SET_RTC_DATE_TIME(YY,MM,DD,hh,mm,ss):
 
-    print("AA 55 C7 38 00 01 01 00 00 00 su ~s")
+    if debug:
+        print("AA 55 C7 38 00 01 01 00 00 00 su ~s")
     #print(RTC_SET(YY,MM,DD,hh,mm,ss))
     data = RTC_SET(YY,MM,DD,hh,mm,ss)
-    print("".join("%02x " % i for i in data).upper())
+    if debug:
+        print("".join("%02x " % i for i in data).upper())
     
     ser.write(bytes(data))
 
     reveive_data = GENERAL_RESPONSE(SET_RTC_DATE_TIME_cmd,SET_RTC_DATE_TIME_resp)
-    print(reveive_data)
-    print("".join("%02x " % i for i in reveive_data).upper())
+    if debug:
+        print(reveive_data)
+        print("".join("%02x " % i for i in reveive_data).upper())
 
     #
     Leading   = (reveive_data[0])
@@ -796,16 +875,19 @@ def SET_RTC_DATE_TIME(YY,MM,DD,hh,mm,ss):
 
 def SET_PIN_FAN_ALL(state):
 
-    print("AA 55 C8 37 46 41 4E 63 01 su ~s")
+    if debug:
+        print("AA 55 C8 37 46 41 4E 63 01 su ~s")
     #print(GENERAL_SET(SET_PIN_FAN_ALL_cmd,SET_PIN_FAN_ALL_key,state))
     data = GENERAL_SET(SET_PIN_FAN_ALL_cmd,SET_PIN_FAN_ALL_key,state)
-    print("".join("%02x " % i for i in data).upper())
+    if debug:
+        print("".join("%02x " % i for i in data).upper())
     
     ser.write(bytes(data))
 
     reveive_data = GENERAL_RESPONSE(SET_PIN_FAN_ALL_cmd,SET_PIN_FAN_ALL_resp)
-    print(reveive_data)
-    print("".join("%02x " % i for i in reveive_data).upper())
+    if debug:
+        print(reveive_data)
+        print("".join("%02x " % i for i in reveive_data).upper())
 
     #
     Leading   = (reveive_data[0])
@@ -984,51 +1066,51 @@ time.sleep(5)
 print("===============TEST GET===============\n")
 
 print("GET_TEMP_HUM:")
-GET_TEMP_HUM()
+print(GET_TEMP_HUM())
 print("\n")
 
 print("GET_CO2:")
-GET_CO2()
+print(GET_CO2())
 print("\n")
 
 print("GET_TVOC:")
-GET_TVOC()
+print(GET_TVOC())
 print("\n")
 
 print("GET_LIGHT:")
-GET_LIGHT()
+print(GET_LIGHT())
 print("\n")
 
 print("GET_PMS:")
-GET_PMS()
+print(GET_PMS())
 print("\n")
 
 print("GET_SENSOR_ALL:")
-GET_SENSOR_ALL()
+print(GET_SENSOR_ALL())
 print("\n")
 
 print("GET_INFO_VERSION:")
-GET_INFO_VERSION()
+print(GET_INFO_VERSION())
 print("\n")
 
 print("GET_INFO_RUNTIME:")
-GET_INFO_RUNTIME()
+print(GET_INFO_RUNTIME())
 print("\n")
 
 print("GET_INFO_ERROR_LOG:")
-GET_INFO_ERROR_LOG()
+print(GET_INFO_ERROR_LOG())
 print("\n")
 
 print("GET_INFO_SENSOR_POR:")
-GET_INFO_SENSOR_POR()
+print(GET_INFO_SENSOR_POR())
 print("\n")
 
 print("GET_RTC_DATE_TIME:")
-GET_RTC_DATE_TIME()
+print(GET_RTC_DATE_TIME())
 print("\n")
 
 print("GET_INFO_PIN_STATE:")
-GET_INFO_PIN_STATE()
+print(GET_INFO_PIN_STATE())
 print("\n")
 
 #===============TEST SET===============#
@@ -1036,52 +1118,52 @@ print("\n")
 print("===============TEST SET===============\n")
 
 print("SET_STATUS_LED:")
-SET_STATUS_LED(0)
-SET_STATUS_LED(1)
+print(SET_STATUS_LED(0))
+print(SET_STATUS_LED(1))
 #SET_STATUS_LED(2567)
 print("\n")
 
 print("SET_PIN_CO2_CAL:")
-SET_PIN_CO2_CAL(0)
-SET_PIN_CO2_CAL(1)
+print(SET_PIN_CO2_CAL(0))
+print(SET_PIN_CO2_CAL(1))
 print("\n")
 
 print("SET_PIN_PMS_RESET:")
-SET_PIN_PMS_RESET(0)
-SET_PIN_PMS_RESET(1)
+print(SET_PIN_PMS_RESET(0))
+print(SET_PIN_PMS_RESET(1))
 print("\n")
 
 print("SET_PIN_PMS_SET:")
-SET_PIN_PMS_SET(0)
-SET_PIN_PMS_SET(1)
+print(SET_PIN_PMS_SET(0))
+print(SET_PIN_PMS_SET(1))
 print("\n")
 
 print("SET_PIN_NBIOT_PWRKEY:")
-SET_PIN_NBIOT_PWRKEY(0)
-SET_PIN_NBIOT_PWRKEY(1)
+print(SET_PIN_NBIOT_PWRKEY(0))
+print(SET_PIN_NBIOT_PWRKEY(1))
 print("\n")
 
 print("SET_PIN_NBIOT_SLEEP:")
-SET_PIN_NBIOT_SLEEP(0)
-SET_PIN_NBIOT_SLEEP(1)
+print(SET_PIN_NBIOT_SLEEP(0))
+print(SET_PIN_NBIOT_SLEEP(1))
 print("\n")
 
 print("SET_PIN_LED_ALL:")
-SET_PIN_LED_ALL(0)
-SET_PIN_LED_ALL(1)
+print(SET_PIN_LED_ALL(0))
+print(SET_PIN_LED_ALL(1))
 print("\n")
 
 print("SET_POLLING_SENSOR:")
-SET_POLLING_SENSOR(1,1,1,1,1,1)
+print(SET_POLLING_SENSOR(1,1,1,1,1,1))
 print("\n")
 
 print("SET_RTC_DATE_TIME:")
-SET_RTC_DATE_TIME(0,1,1,0,0,0)
+print(SET_RTC_DATE_TIME(0,1,1,0,0,0))
 print("\n")
 
 print("SET_PIN_FAN_ALL:")
-SET_PIN_FAN_ALL(0)
-SET_PIN_FAN_ALL(1)
+print(SET_PIN_FAN_ALL(0))
+print(SET_PIN_FAN_ALL(1))
 print("\n")
 
 #===============TEST PROTOCOL===============#
